@@ -30,8 +30,14 @@ public class EchoObjectStream {
       System.err.println("EchoObjectStream: before reading");
       Object obj = ois.readObject();
       System.err.println("EchoObjectStream: got an object, class is "+obj.getClass());
+      // we terminate if we get the string STOP
+      if(obj.equals("STOP")) {
+        System.err.println("Received the stop signal");
+        break;
+      }
       oos.writeObject(obj);
       oos.flush();
     }
+    System.err.println("Terminating echo");
   }
 }

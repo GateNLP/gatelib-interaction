@@ -22,6 +22,8 @@ public class Process4ObjectStream extends ProcessBase
 
   private static final Logger LOGGER = Logger.getLogger(Process4ObjectStream.class.getName());
   
+  private final Object synchronizer = new Object();
+
   ObjectInputStream ois;
   ObjectOutputStream oos;
   
@@ -45,7 +47,9 @@ public class Process4ObjectStream extends ProcessBase
   
   public Object readObject() {
     try {
-      return ois.readObject();
+      synchronized(synchronizer) {
+        return ois.readObject();
+      }
     } catch (Exception ex) {
       throw new RuntimeException("Problem when reading from object stream",ex);
     }
@@ -58,8 +62,10 @@ public class Process4ObjectStream extends ProcessBase
    */
   public void writeObject(Object object) {
     try {
-      oos.writeObject(object);
-      oos.flush();
+      synchronized(synchronizer) {
+        oos.writeObject(object);
+        oos.flush();
+      }
     } catch (IOException ex) {
       throw new RuntimeException("Problem when writing to object stream",ex);
     }
@@ -71,23 +77,6 @@ public class Process4ObjectStream extends ProcessBase
    */
   public boolean isAlive() {
     return !need2start();
-  }
-  
-  /**
-   * Attempt to stop the external process.
-   */
-  public void stop() {
-    try {
-      oos.close();
-    } catch (IOException ex) {
-      // ignore
-    }
-    try {
-      ois.close();
-    } catch (IOException ex) {
-      // ignore
-    }
-    process.destroy();    
   }
   
   ///////////////////////////////////////////////////////////////////
@@ -110,7 +99,8 @@ public class Process4ObjectStream extends ProcessBase
       InputStream pis = process.getInputStream();
       ois = new ObjectInputStream(pis);
       try {
-        ois.readObject();
+        Object ret = ois.readObject();
+        System.err.println("Got hello from process: "+ret);
       } catch (ClassNotFoundException ex) {
         throw new RuntimeException("Could not receive the other side's hello object");
       }

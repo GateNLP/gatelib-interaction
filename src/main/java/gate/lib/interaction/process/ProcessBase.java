@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
 
@@ -18,10 +19,11 @@ public abstract class ProcessBase
 
   private static final Logger LOGGER = Logger.getLogger(ProcessBase.class.getName());
   
-  List<String> command = new ArrayList<String>();
-  ProcessBuilder builder = null;
-  Process process = null;
-  File workingDir = new File(".");
+  protected List<String> command = new ArrayList<String>();
+  protected ProcessBuilder builder = null;
+  protected Process process = null;
+  protected File workingDir = new File(".");
+  protected Thread loggerThread;
   
   /**
    * Make sure the process is running.
@@ -77,11 +79,23 @@ public abstract class ProcessBase
   
   /**
    * Attempt to stop the external process.
+   * We try all we can to destroy the process, but
+   * there is no guarantee that the process will actually be stopped by this.
    */
   public void stop() {
-    stopInteraction();
-    process.destroy();    
+    // wait a little so any pending standard error can still be processed
+    try {
+      Thread.sleep(500);
+    } catch (InterruptedException ex) {
+      //
+    }    
+    process.destroy(); 
+    if(process.isAlive()) {
+      process.destroyForcibly();
+    }    
+    // loggerThread.stop();
   }
+  
   
   ///////////////////////////////////////////////////////////////////
   
@@ -101,8 +115,7 @@ public abstract class ProcessBase
     // stream to another stream which is our own implementation that
     // actually writes to the logger
     // For now we do nothing at all
-    /*
-    Thread t = new Thread() {
+    loggerThread = new Thread() {
       public void run() {
         try {
           IOUtils.copy(stream, System.err);
@@ -111,9 +124,8 @@ public abstract class ProcessBase
         }
       }
     };
-    t.setDaemon(true);
-    t.start();
-    */
+    loggerThread.setDaemon(true);
+    loggerThread.start();
   }
   
   protected boolean need2start() {
@@ -123,12 +135,15 @@ public abstract class ProcessBase
     } else if(process==null) {
       ret = true;
     } else if(!process.isAlive()) {
+      System.err.println("Apparently process is alive");
       ret = true;
     } else {
       boolean stillRunning = false;
       try {
         int code = process.exitValue();
+        System.err.println("Exit value is "+code);
       } catch(IllegalThreadStateException ex) {
+        System.err.println("Got illegalthreadstate");
         stillRunning = true;
       }
       if(!stillRunning) ret = true;
