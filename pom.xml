@@ -5,7 +5,7 @@
   <artifactId>interaction</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>gate-interaction</name>
+  <name>gatelib-interaction</name>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>

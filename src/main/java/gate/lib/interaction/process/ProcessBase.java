@@ -76,6 +76,17 @@ public abstract class ProcessBase
   public boolean isAlive() {
     return !need2start();
   }
+
+  public int waitFor() {
+    int exitCode = 0;
+    try {
+      // wait until the process finishes
+      exitCode = process.waitFor();
+    } catch (InterruptedException ex) {
+      exitCode = Integer.MIN_VALUE;
+    }
+    return exitCode;
+  }
   
   /**
    * Attempt to stop the external process.
@@ -105,6 +116,7 @@ public abstract class ProcessBase
   protected abstract void setupInteraction();
   
   protected abstract void stopInteraction();
+  
   
   /**
    * Copy the stream output to the logger using the given logging level.

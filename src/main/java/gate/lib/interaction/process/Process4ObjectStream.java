@@ -8,8 +8,6 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
-import org.apache.commons.io.IOUtils;
 
 /**
  * Minimalist class for exchanging objects through obejct streams  with a command line process.
