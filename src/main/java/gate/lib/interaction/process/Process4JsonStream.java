@@ -51,7 +51,7 @@ public class Process4JsonStream extends ProcessBase
     try {
       synchronized(synchronizer) {
         String json = ir.readLine();
-        System.err.println("DEBUG: got json line: "+json);
+        //System.err.println("DEBUG: got json line: "+json);
         Object obj = mapper.readValue(json,Map.class);
         return obj;
       }
@@ -91,17 +91,15 @@ public class Process4JsonStream extends ProcessBase
 
   @Override
   protected void setupInteraction() {
-    // NOTE: creating an object input stream will block until the header of 
-    // the first object is received so we have to have the convention that
-    // both sides need to first send some Hello object.
-    // This should be a string that indicates the sending component and version.
     try {
+      //System.err.println("Setting up the Print Stream");
       ps = new PrintStream(process.getOutputStream());
       //ps.println("Hello from Process4ObjectStream v1.0");
     } catch (Exception ex) {
       throw new RuntimeException("Could not create output connection",ex);
     }
     try {
+      //System.err.println("Setting up the input stream");
       InputStream pis = process.getInputStream();
       ir = new BufferedReader(new InputStreamReader(pis,"UTF-8"));
       try {
@@ -113,6 +111,7 @@ public class Process4JsonStream extends ProcessBase
     } catch (IOException ex) {
       throw new RuntimeException("Could not create input connection",ex);      
     }
+    //System.err.println("DONE setting up the interaction");
   }
 
   @Override

@@ -22,15 +22,21 @@ public class TestProcess4JsonStream {
   
   @Test
   public void testAll() {
+    System.err.println("Test Process4JsonStream: before creation");
     Process4JsonStream process = 
             new Process4JsonStream(new File("."), "java -cp target/interaction-1.0-SNAPSHOT.jar:target/dependency/*  gate.lib.interaction.process.EchoStream");
+    System.err.println("Test Process4JsonStream: after creation");
     assertTrue(process.isAlive());
+    System.err.println("Test Process4JsonStream: is alive");
     // send something to the echo process
     Map m = new HashMap();
     m.put("x","y");
     m.put("cmd","do");
+    System.err.println("Test Process4JsonStream: before write");
     process.writeObject(m);
+    System.err.println("Test Process4JsonStream: before read");
     Map ret = (Map)process.readObject();
+    System.err.println("Test Process4JsonStream: after read");
     // make sure we got it back properly
     assertEquals("y", ret.get("x"));
     

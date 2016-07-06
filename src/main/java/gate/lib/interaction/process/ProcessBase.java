@@ -155,7 +155,7 @@ public abstract class ProcessBase
         int code = process.exitValue();
         System.err.println("Exit value is "+code);
       } catch(IllegalThreadStateException ex) {
-        System.err.println("Got illegalthreadstate");
+        //System.err.println("Got illegalthreadstate");
         stillRunning = true;
       }
       if(!stillRunning) ret = true;
