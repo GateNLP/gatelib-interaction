@@ -19,7 +19,8 @@ public class TestProcess4ObjectStream {
   @Test
   public void testAll() {
     Process4ObjectStream process = 
-            new Process4ObjectStream(new File("."), "java -cp target/interaction-1.0-SNAPSHOT.jar  gate.lib.interaction.process.EchoObjectStream");
+            new Process4ObjectStream(new File("."), 
+            "java -cp target/interaction-1.0-SNAPSHOT.jar  gate.lib.interaction.process.EchoObjectStream".split("\\s+",-1));
     assertTrue(process.isAlive());
     // send something to the echo process
     process.writeObject("Something");

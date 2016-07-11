@@ -30,16 +30,13 @@ public class Process4JsonStream extends ProcessBase
   public Process4JsonStream(File workingDirectory,  List<String> command) {
     this.workingDir = workingDirectory;
     this.command.addAll(command);
+    updateCommand4OS(this.command);
     ensureProcess();
   }
   public Process4JsonStream(File workingDirectory,  String... command) {
     this.workingDir = workingDirectory;
     this.command.addAll(Arrays.asList(command));    
-    ensureProcess(); 
-  }
-  public Process4JsonStream(File workingDirectory, String command) {
-    this.workingDir = workingDirectory;
-    this.command.addAll(Arrays.asList(command.split("\\s+")));
+    updateCommand4OS(this.command);
     ensureProcess(); 
   }
   

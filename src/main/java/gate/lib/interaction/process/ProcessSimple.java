@@ -28,16 +28,13 @@ public class ProcessSimple extends ProcessBase
   public ProcessSimple(File workingDirectory,  List<String> command) {
     this.workingDir = workingDirectory;
     this.command.addAll(command);
+    updateCommand4OS(this.command);
     ensureProcess();
   }
   public ProcessSimple(File workingDirectory,  String... command) {
     this.workingDir = workingDirectory;
     this.command.addAll(Arrays.asList(command));    
-    ensureProcess(); 
-  }
-  public ProcessSimple(File workingDirectory, String command) {
-    this.workingDir = workingDirectory;
-    this.command.addAll(Arrays.asList(command.split("\\s+")));
+    updateCommand4OS(this.command);
     ensureProcess(); 
   }
   

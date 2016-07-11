@@ -24,7 +24,7 @@ public abstract class ProcessBase
   protected Process process = null;
   protected File workingDir = new File(".");
   protected Thread loggerThread;
-  
+    
   /**
    * Make sure the process is running.
    * Returns true if the process was started freshly, false if it was 
@@ -162,5 +162,29 @@ public abstract class ProcessBase
     }
     return ret;
   }
+  
+  /**
+   * Does an in-place update of the command to conform to what the OS expects.
+   * This is mainly about dealing with commands and arguments that contain spaces for now.
+   * On a Windows-like system, everything that contains spaces is surrounded with double quotes.
+   * On a Linux-like system, spaces are escaped with a backslash.
+   * @param command 
+   */
+  protected void updateCommand4OS(List<String> command) {
+    boolean linuxLike = System.getProperty("file.separator").equals("/");
+    boolean windowsLike = System.getProperty("file.separator").equals("\\");
+    for(int i=0; i<command.size(); i++) {
+      String arg = command.get(i);
+      if(arg.contains(" ")) {
+        if(linuxLike) {
+          command.set(i, arg.replaceAll(" ", "\\ "));
+        } else if(windowsLike) {
+          command.set(i, "\""+arg+"\"");          
+        }
+      }
+    }
+    
+  }
+  
   
 }

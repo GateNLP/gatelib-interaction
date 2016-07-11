@@ -28,19 +28,15 @@ public class Process4ObjectStream extends ProcessBase
   public Process4ObjectStream(File workingDirectory,  List<String> command) {
     this.workingDir = workingDirectory;
     this.command.addAll(command);
+    updateCommand4OS(this.command);
     ensureProcess();
   }
   public Process4ObjectStream(File workingDirectory,  String... command) {
     this.workingDir = workingDirectory;
     this.command.addAll(Arrays.asList(command));    
+    updateCommand4OS(this.command);
     ensureProcess(); 
   }
-  public Process4ObjectStream(File workingDirectory, String command) {
-    this.workingDir = workingDirectory;
-    this.command.addAll(Arrays.asList(command.split("\\s+")));
-    ensureProcess(); 
-  }
-  
   
   
   public Object readObject() {
