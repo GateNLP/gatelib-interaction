@@ -35,6 +35,8 @@ public abstract class ProcessBase
    */
   public boolean ensureProcess() {
     if(need2start()) {
+      System.err.println("ProcessBase: running command:");
+      for(int i=0; i<command.size();i++) { System.err.println(i+": "+command.get(i)); }
       builder = new ProcessBuilder(command);
       builder.directory(workingDir);
       try {
@@ -177,7 +179,10 @@ public abstract class ProcessBase
       String arg = command.get(i);
       if(arg.contains(" ")) {
         if(linuxLike) {
-          command.set(i, arg.replaceAll(" ", "\\ "));
+          // NOTE: although it looked as if we can only get it to work with escaping, it
+          // turns out it actually works without the escaping. Not sure why it did not
+          // work when I originally tested this. 
+          //command.set(i, arg.replaceAll(" ", "\\ "));
         } else if(windowsLike) {
           command.set(i, "\""+arg+"\"");          
         }
