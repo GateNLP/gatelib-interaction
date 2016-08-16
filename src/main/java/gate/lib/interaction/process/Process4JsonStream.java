@@ -49,6 +49,11 @@ public class Process4JsonStream extends ProcessBase
       synchronized(synchronizer) {
         String json = ir.readLine();
         //System.err.println("DEBUG: got json line: "+json);
+        while(!json.trim().startsWith("{")) {
+          // System.err.println("DEBUG: Ignoring non-map response: "+json);
+          json = ir.readLine();
+          // System.err.println("DEBUG: got another line: "+json);
+        }
         Object obj = mapper.readValue(json,Map.class);
         return obj;
       }
