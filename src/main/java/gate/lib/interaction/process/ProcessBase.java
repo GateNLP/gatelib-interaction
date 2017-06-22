@@ -24,7 +24,7 @@ public abstract class ProcessBase
   protected Process process = null;
   protected File workingDir = new File(".");
   protected Thread loggerThread;
-  
+    
   /**
    * Make sure the process is running.
    * Returns true if the process was started freshly, false if it was 
@@ -35,6 +35,8 @@ public abstract class ProcessBase
    */
   public boolean ensureProcess() {
     if(need2start()) {
+      System.err.println("ProcessBase: running command:");
+      for(int i=0; i<command.size();i++) { System.err.println(i+": "+command.get(i)); }
       builder = new ProcessBuilder(command);
       builder.directory(workingDir);
       try {
@@ -155,12 +157,39 @@ public abstract class ProcessBase
         int code = process.exitValue();
         System.err.println("Exit value is "+code);
       } catch(IllegalThreadStateException ex) {
-        System.err.println("Got illegalthreadstate");
+        //System.err.println("Got illegalthreadstate");
         stillRunning = true;
       }
       if(!stillRunning) ret = true;
     }
     return ret;
   }
+  
+  /**
+   * Does an in-place update of the command to conform to what the OS expects.
+   * This is mainly about dealing with commands and arguments that contain spaces for now.
+   * On a Windows-like system, everything that contains spaces is surrounded with double quotes.
+   * On a Linux-like system, spaces are escaped with a backslash.
+   * @param command 
+   */
+  protected void updateCommand4OS(List<String> command) {
+    boolean linuxLike = System.getProperty("file.separator").equals("/");
+    boolean windowsLike = System.getProperty("file.separator").equals("\\");
+    for(int i=0; i<command.size(); i++) {
+      String arg = command.get(i);
+      if(arg.contains(" ")) {
+        if(linuxLike) {
+          // NOTE: although it looked as if we can only get it to work with escaping, it
+          // turns out it actually works without the escaping. Not sure why it did not
+          // work when I originally tested this. 
+          //command.set(i, arg.replaceAll(" ", "\\ "));
+        } else if(windowsLike) {
+          command.set(i, "\""+arg+"\"");          
+        }
+      }
+    }
+    
+  }
+  
   
 }

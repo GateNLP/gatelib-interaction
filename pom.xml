@@ -4,15 +4,21 @@
   <groupId>uk.ac.gate.lib</groupId>
   <artifactId>interaction</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>3.5.1</version>
   <name>gatelib-interaction</name>
   <url>http://maven.apache.org</url>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.6.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
