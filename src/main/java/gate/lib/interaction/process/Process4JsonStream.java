@@ -25,19 +25,28 @@ public class Process4JsonStream extends ProcessBase
   
   private final Object synchronizer = new Object();
   
-  private ObjectMapper mapper = new ObjectMapper();
+  private final ObjectMapper mapper = new ObjectMapper();
 
-  public Process4JsonStream(File workingDirectory,  List<String> command) {
-    this.workingDir = workingDirectory;
-    this.command.addAll(command);
-    updateCommand4OS(this.command);
-    ensureProcess();
+  private Process4JsonStream() { }
+  
+  public static Process4JsonStream create(File workingDirectory, Map<String,String> env,  List<String> command) {
+    Process4JsonStream ret = new Process4JsonStream();    
+    if(workingDirectory != null) ret.workingDir = workingDirectory;
+    if(env != null) ret.envvars.putAll(env);
+    ret.command.addAll(command);
+    ret.updateCommand4OS(ret.command);
+    ret.ensureProcess();
+    return ret;
   }
-  public Process4JsonStream(File workingDirectory,  String... command) {
-    this.workingDir = workingDirectory;
-    this.command.addAll(Arrays.asList(command));    
-    updateCommand4OS(this.command);
-    ensureProcess(); 
+  public static Process4JsonStream create(File workingDirectory, Map<String,String> env,  String... command) {
+    Process4JsonStream ret = new Process4JsonStream();    
+    if(workingDirectory != null) ret.workingDir = workingDirectory;
+    if(env != null) ret.envvars.putAll(env);
+    ret.command.addAll(Arrays.asList(command));    
+    ret.updateCommand4OS(ret.command);
+    ret.ensureProcess(); 
+    return ret;
+    
   }
   
   BufferedReader ir;

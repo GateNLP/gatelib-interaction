@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
@@ -24,6 +26,7 @@ public abstract class ProcessBase
   protected Process process = null;
   protected File workingDir = new File(".");
   protected Thread loggerThread;
+  protected Map<String,String> envvars = new HashMap<String,String>();
     
   /**
    * Make sure the process is running.
@@ -39,6 +42,8 @@ public abstract class ProcessBase
       for(int i=0; i<command.size();i++) { System.err.println(i+": "+command.get(i)); }
       builder = new ProcessBuilder(command);
       builder.directory(workingDir);
+      Map<String,String> env = builder.environment();
+      env.putAll(envvars);
       try {
         process = builder.start();
       } catch (IOException ex) {

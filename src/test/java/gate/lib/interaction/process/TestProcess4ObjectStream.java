@@ -19,7 +19,7 @@ public class TestProcess4ObjectStream {
   @Test
   public void testAll() {
     Process4ObjectStream process = 
-            new Process4ObjectStream(new File("."), 
+            Process4ObjectStream.create(new File("."), null,
             "java -cp target/*  gate.lib.interaction.process.EchoObjectStream".split("\\s+",-1));
     assertTrue(process.isAlive());
     // send something to the echo process

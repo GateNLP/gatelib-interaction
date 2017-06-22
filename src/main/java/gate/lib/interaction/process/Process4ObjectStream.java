@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import org.apache.log4j.Logger;
 
 /**
@@ -25,17 +26,25 @@ public class Process4ObjectStream extends ProcessBase
   ObjectInputStream ois;
   ObjectOutputStream oos;
   
-  public Process4ObjectStream(File workingDirectory,  List<String> command) {
-    this.workingDir = workingDirectory;
-    this.command.addAll(command);
-    updateCommand4OS(this.command);
-    ensureProcess();
+  private Process4ObjectStream() {}
+  
+  public static Process4ObjectStream create(File workingDirectory, Map<String,String> env,  List<String> command) {
+    Process4ObjectStream ret = new Process4ObjectStream();
+    if(workingDirectory != null) ret.workingDir = workingDirectory;
+    if(env != null) ret.envvars.putAll(env);
+    ret.command.addAll(command);
+    ret.updateCommand4OS(ret.command);
+    ret.ensureProcess();
+    return ret;
   }
-  public Process4ObjectStream(File workingDirectory,  String... command) {
-    this.workingDir = workingDirectory;
-    this.command.addAll(Arrays.asList(command));    
-    updateCommand4OS(this.command);
-    ensureProcess(); 
+  public static Process4ObjectStream create(File workingDirectory, Map<String,String> env,  String... command) {
+    Process4ObjectStream ret = new Process4ObjectStream();
+    if(workingDirectory != null) ret.workingDir = workingDirectory;
+    if(env != null) ret.envvars.putAll(env);
+    ret.command.addAll(Arrays.asList(command));    
+    ret.updateCommand4OS(ret.command);
+    ret.ensureProcess(); 
+    return ret;
   }
   
   

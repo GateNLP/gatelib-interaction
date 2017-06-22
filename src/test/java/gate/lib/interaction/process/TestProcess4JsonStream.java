@@ -24,7 +24,7 @@ public class TestProcess4JsonStream {
   public void testAll() {
     System.err.println("Test Process4JsonStream: before creation");
     Process4JsonStream process = 
-            new Process4JsonStream(new File("."), 
+            Process4JsonStream.create(new File("."), null,
             "java -cp target/*:target/dependency/*  gate.lib.interaction.process.EchoStream".split("\\s+",-1));
     System.err.println("Test Process4JsonStream: after creation");
     assertTrue(process.isAlive());
