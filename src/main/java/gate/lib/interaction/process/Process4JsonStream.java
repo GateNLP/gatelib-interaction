@@ -143,7 +143,8 @@ public class Process4JsonStream extends ProcessBase
   
   public static void main(String[] args) {
     System.err.println("Running the Process4JsonStream class");
-    Process4JsonStream pr = new Process4JsonStream(new File("."),"java -cp target/interaction-1.0-SNAPSHOT.jar:target/dependency/* gate.lib.interaction.process.EchoStream");
+    Process4JsonStream pr = Process4JsonStream.create(new File("."),null,
+            "java -cp target/interaction-1.0-SNAPSHOT.jar:target/dependency/* gate.lib.interaction.process.EchoStream");
     //String someString = "this is some string";
     System.err.println("Right before writing to process");
     Map m = new HashMap();
