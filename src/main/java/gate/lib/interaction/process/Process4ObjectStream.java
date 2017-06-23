@@ -130,7 +130,9 @@ public class Process4ObjectStream extends ProcessBase
   
   public static void main(String[] args) {
     System.err.println("Running the Process4ObjectStream class");
-    Process4ObjectStream pr = new Process4ObjectStream(new File("."),"java -cp target/interaction-1.0-SNAPSHOT.jar gate.lib.interaction.process.EchoObjectStream");
+    Process4ObjectStream pr = 
+            Process4ObjectStream.create(new File("."),null,
+                    "java -cp target/interaction-1.0-SNAPSHOT.jar gate.lib.interaction.process.EchoObjectStream");
     String someString = "this is some string";
     System.err.println("Right before writing to process");
     pr.writeObject(someString);
