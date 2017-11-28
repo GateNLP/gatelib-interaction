@@ -50,11 +50,14 @@ public class TestProcess4JsonStream {
     List<Double> retvals = (List)ret.get("vals");
     System.err.println("Array back: "+retvals);
     
-    // send the stop signal    
-    m = new HashMap();
-    m.put("cmd", "STOP");
-    process.writeObject(m);
+    // send the stop signal, can do this as a JSON object or just raw String for the EchoStream class  
+    // Note the raw string will get transmitted as JSON as well, i.e. it will be sent over quoted.
+    //m = new HashMap();
+    //m.put("cmd", "STOP");
+    //process.writeObject(m);
     // stop process
+    process.writeObject("STOP");
+    
     process.stop();
     // make sure it is stopped
     // NOTE: this does not seem to work?

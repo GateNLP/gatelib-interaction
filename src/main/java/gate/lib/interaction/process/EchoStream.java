@@ -23,16 +23,30 @@ public class EchoStream {
     String line;
     while(true) {
       System.err.println("ES: before reading");
-      line = ois.readLine();
-      System.err.println("ES: got a line "+line);
+      line = ois.readLine().trim();
+      System.err.println("ES: got a line >"+line+"<");
+      if(line==null) {
+        System.err.println("Received a null line, terminating");
+        break;
+      }
       // e terminate if we get the string STOP instead of a JSON object or a json map
       // that contains the key/value cmd/"STOP"
-      Map m = mapper.readValue(line,Map.class);
-      String val = (String)m.get("cmd");
-      if(val != null && val.equals("STOP")) {
-        System.err.println("Received the stop signal from JSON");
-        break;        
+      if(line.equals("STOP") || line.equals("\"STOP\"")) {
+        System.err.println("Received STOP signal from string");
+        break;
+      } else if(line.startsWith("{")) {
+        try {
+          Map m = mapper.readValue(line,Map.class);
+          String val = (String)m.get("cmd");
+          if(val != null && val.equals("STOP")) {
+            System.err.println("Received the stop signal from JSON");
+            break;        
+          }
+        } catch (Exception ex) {
+          // ignore... could have been something that is not actually a JSON map
+        }
       }
+      System.err.println("Sending back line ..");
       oos.println(line);
       oos.flush();
     }
