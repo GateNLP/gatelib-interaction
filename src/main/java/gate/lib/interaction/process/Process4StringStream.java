@@ -30,21 +30,31 @@ public class Process4StringStream extends ProcessBase
   private final Object synchronizer = new Object();
   
 
-  public Process4StringStream(File workingDirectory,  List<String> command) {
-    this.workingDir = workingDirectory;
-    this.command.addAll(command);
-    updateCommand4OS(this.command);
-    ensureProcess();
-  }
-  public Process4StringStream(File workingDirectory,  String... command) {
-    this.workingDir = workingDirectory;
-    this.command.addAll(Arrays.asList(command));    
-    updateCommand4OS(this.command);
-    ensureProcess(); 
+  private Process4StringStream() {
   }
   
   BufferedReader ir;
   PrintStream ps;
+  
+  public static Process4StringStream create(File workingDirectory, Map<String,String> env,  List<String> command) {
+    Process4StringStream ret = new Process4StringStream();    
+    if(workingDirectory != null) ret.workingDir = workingDirectory;
+    if(env != null) ret.envvars.putAll(env);
+    ret.command.addAll(command);
+    ret.updateCommand4OS(ret.command);
+    ret.ensureProcess();
+    return ret;
+  }
+  public static Process4StringStream create(File workingDirectory, Map<String,String> env,  String... command) {
+    Process4StringStream ret = new Process4StringStream();    
+    if(workingDirectory != null) ret.workingDir = workingDirectory;
+    if(env != null) ret.envvars.putAll(env);
+    ret.command.addAll(Arrays.asList(command));    
+    ret.updateCommand4OS(ret.command);
+    ret.ensureProcess(); 
+    return ret;
+    
+  }
   
   
   public Object readObject() {
@@ -131,7 +141,7 @@ public class Process4StringStream extends ProcessBase
   
   public static void main(String[] args) {
     System.err.println("Running the Process4StringStream class");
-    Process4StringStream pr = new Process4StringStream(new File("."),"java -cp target/interaction-1.0-SNAPSHOT.jar:target/dependency/* gate.lib.interaction.process.EchoStream");
+    Process4StringStream pr = Process4StringStream.create(new File("."),null,"java -cp target/interaction-1.0-SNAPSHOT.jar:target/dependency/* gate.lib.interaction.process.EchoStream");
     //String someString = "this is some string";
     System.err.println("Right before writing to process");
     pr.writeObject("First line sent over");

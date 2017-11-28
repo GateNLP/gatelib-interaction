@@ -20,7 +20,7 @@ public class TestProcess4StringStream {
   public void testAll() {
     System.err.println("Test Process4StringStream: before creation");
     Process4StringStream process = 
-            new Process4StringStream(new File("."), 
+            Process4StringStream.create(new File("."), null,
             "java -cp target/*:target/dependency/*  gate.lib.interaction.process.EchoStream".split("\\s+",-1));
     System.err.println("Test Process4StringStream: after creation");
     assertTrue(process.isAlive());
