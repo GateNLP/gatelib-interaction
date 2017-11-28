@@ -4,7 +4,7 @@
   <groupId>uk.ac.gate.lib</groupId>
   <artifactId>interaction</artifactId>
   <packaging>jar</packaging>
-  <version>3.8</version>
+  <version>3.8.1</version>
   <name>gatelib-interaction</name>
   <url>http://maven.apache.org</url>
 
