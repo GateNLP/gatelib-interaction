@@ -11,10 +11,15 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 /**
- * Minimalist class for running an external command. This simple passes on
+ * Minimalist class for running an external command. 
+ * 
+ * This simple passes on
  * standard output and error to our own process and closes standard input
  * as soon as possible.
  * The read and write methods for this class do nothing.
+ * 
+ * 
+ * 
  */
 public class ProcessSimple extends ProcessBase
 {
