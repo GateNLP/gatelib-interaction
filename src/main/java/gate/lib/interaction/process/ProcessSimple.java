@@ -3,13 +3,11 @@ package gate.lib.interaction.process;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -25,17 +23,25 @@ public class ProcessSimple extends ProcessBase
   
   private final Object synchronizer = new Object();
 
-  public ProcessSimple(File workingDirectory,  List<String> command) {
-    this.workingDir = workingDirectory;
-    this.command.addAll(command);
-    updateCommand4OS(this.command);
-    ensureProcess();
+  private ProcessSimple() {} 
+  
+  public static ProcessSimple create(File workingDirectory, Map<String,String> env,  List<String> command) {
+    ProcessSimple ret = new ProcessSimple();
+    if(workingDirectory != null) ret.workingDir = workingDirectory;
+    if(env != null) ret.envvars.putAll(env);
+    ret.command.addAll(command);
+    ret.updateCommand4OS(ret.command);
+    ret.ensureProcess();
+    return ret;
   }
-  public ProcessSimple(File workingDirectory,  String... command) {
-    this.workingDir = workingDirectory;
-    this.command.addAll(Arrays.asList(command));    
-    updateCommand4OS(this.command);
-    ensureProcess(); 
+  public static ProcessSimple create(File workingDirectory, Map<String,String> env,  String... command) {
+    ProcessSimple ret = new ProcessSimple();
+    if(workingDirectory != null) ret.workingDir = workingDirectory;
+    if(env != null) ret.envvars.putAll(env);
+    ret.command.addAll(Arrays.asList(command));    
+    ret.updateCommand4OS(ret.command);
+    ret.ensureProcess(); 
+    return ret;
   }
   
   
