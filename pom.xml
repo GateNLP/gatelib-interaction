@@ -7,7 +7,72 @@
   <version>3.8.1</version>
   <name>gatelib-interaction</name>
   <url>http://maven.apache.org</url>
+    <properties>
+        <skipIntegrationTests>true</skipIntegrationTests>
+    </properties>
+  <build>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-dependency-plugin</artifactId>
+      <configuration>
+      </configuration>
+      <executions>
+        <execution>
+          <id>before-integration-tests</id>
+          <goals>
+            <goal>copy-dependencies</goal>
+          </goals>
+          <phase>integration-test</phase>
+          <configuration>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
 
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-surefire-plugin</artifactId>
+      <configuration>
+        <skip>true</skip>
+      </configuration>
+      <executions>
+        <execution>
+          <id>unit-tests</id>
+          <goals>
+            <goal>test</goal>
+          </goals>
+          <phase>test</phase>
+          <configuration>
+            <skip>false</skip>
+            <excludes>
+              <exclude>**/integration/*.java</exclude>
+            </excludes>
+          </configuration>
+        </execution>
+        <execution>
+          <id>integration-tests</id>
+          <goals>
+            <goal>test</goal>
+          </goals>
+          <phase>integration-test</phase>
+          <configuration>
+            <skip>false</skip>
+            <!-- <skip>${skipIntegrationTests}</skip> -->
+            <excludes>
+              <exclude>none</exclude>
+            </excludes>
+            <includes>
+              <include>**/integration/*.java</include>
+            </includes>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
+
+
+  </plugins>
+  </build>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>

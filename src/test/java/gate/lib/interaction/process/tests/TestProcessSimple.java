@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gate.lib.interaction.process;
+package gate.lib.interaction.process.tests;
+
+import gate.lib.interaction.process.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
