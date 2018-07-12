@@ -1,77 +1,100 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>uk.ac.gate.lib</groupId>
+  <groupId>org.jpetrak.gate.lib</groupId>
   <artifactId>interaction</artifactId>
   <packaging>jar</packaging>
-  <version>3.8.1</version>
+  <version>3.8.2</version>
   <name>gatelib-interaction</name>
-  <url>http://maven.apache.org</url>
-    <properties>
-        <skipIntegrationTests>true</skipIntegrationTests>
-    </properties>
+  <description>
+    A library that implements a number of different ways for running a program
+    in a different process and communicating with that process by sending 
+    data back and forth over standard input/output in various formats 
+    (JSON, ObjectStream ... ). 
+  </description>
+   <developers>
+    <developer>
+      <name>Johann Petrak</name>
+      <email>johann.petrak@gmail.com</email>
+      <organization>GATE Team</organization>
+      <organizationUrl>https://gate.ac.uk</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/johann-petrak/gatelib-interaction.git</connection>
+    <developerConnection>scm:git:git@github.com:johann-petrak/gatelib-interaction.git</developerConnection>
+    <url>https://github.com/johann-petrak/gatelib-interaction</url>
+  </scm>
+
+  <url>https://github.com/johann-petrak/gatelib-interaction</url>
+  <properties>
+    <!-- <skipIntegrationTests>true</skipIntegrationTests> -->
+  </properties>
   <build>
-  <plugins>
-    <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-dependency-plugin</artifactId>
-      <configuration>
+    <plugins>
+      <!-- this is just needed for the site goal -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.7.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
       </configuration>
-      <executions>
-        <execution>
-          <id>before-integration-tests</id>
-          <goals>
-            <goal>copy-dependencies</goal>
-          </goals>
-          <phase>integration-test</phase>
-          <configuration>
+        <executions>
+          <execution>
+            <id>before-integration-tests</id>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <phase>integration-test</phase>
+            <configuration>
           </configuration>
-        </execution>
-      </executions>
-    </plugin>
-
-    <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-surefire-plugin</artifactId>
-      <configuration>
-        <skip>true</skip>
-      </configuration>
-      <executions>
-        <execution>
-          <id>unit-tests</id>
-          <goals>
-            <goal>test</goal>
-          </goals>
-          <phase>test</phase>
-          <configuration>
-            <skip>false</skip>
-            <excludes>
-              <exclude>**/integration/*.java</exclude>
-            </excludes>
-          </configuration>
-        </execution>
-        <execution>
-          <id>integration-tests</id>
-          <goals>
-            <goal>test</goal>
-          </goals>
-          <phase>integration-test</phase>
-          <configuration>
-            <skip>false</skip>
-            <!-- <skip>${skipIntegrationTests}</skip> -->
-            <excludes>
-              <exclude>none</exclude>
-            </excludes>
-            <includes>
-              <include>**/integration/*.java</include>
-            </includes>
-          </configuration>
-        </execution>
-      </executions>
-    </plugin>
-
-
-  </plugins>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+        <executions>
+          <execution>
+            <id>unit-tests</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <phase>test</phase>
+            <configuration>
+              <skip>false</skip>
+              <excludes>
+                <exclude>**/integration/*.java</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>integration-tests</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <phase>integration-test</phase>
+            <configuration>
+              <skip>false</skip>
+              <!-- <skip>${skipIntegrationTests}</skip> -->
+              <excludes>
+                <exclude>none</exclude>
+              </excludes>
+              <includes>
+                <include>**/integration/*.java</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
   <dependencies>
     <dependency>
