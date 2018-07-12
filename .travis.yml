@@ -7,6 +7,6 @@ jdk:
   - oraclejdk10
   - openjdk8
 git:
-  depth: 3
+  depth: 2
 
 
