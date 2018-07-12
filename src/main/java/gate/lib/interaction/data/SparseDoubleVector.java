@@ -23,7 +23,7 @@ public class SparseDoubleVector implements Serializable {
   /**
    * Create a sparse vector with the specified number of non-zero locations.
    * 
-   * @param numberOfLocations 
+   * @param numberOfLocations the number of non-zero locations
    */
   public SparseDoubleVector(int numberOfLocations) {
     indices = new int[numberOfLocations];
