@@ -25,10 +25,19 @@
     <developerConnection>scm:git:git@github.com:johann-petrak/gatelib-interaction.git</developerConnection>
     <url>https://github.com/johann-petrak/gatelib-interaction</url>
   </scm>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
   <url>https://github.com/johann-petrak/gatelib-interaction</url>
   <properties>
     <!-- <skipIntegrationTests>true</skipIntegrationTests> -->
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
   <build>
     <plugins>
