@@ -34,8 +34,8 @@ public abstract class ProcessBase
    * Returns true if the process was started freshly, false if it was 
    * already running.
    * 
-   * @return
-   * @throws IOException 
+   * @return true if started, false if already running
+   * 
    */
   public boolean ensureProcess() {
     if(need2start()) {
@@ -65,28 +65,31 @@ public abstract class ProcessBase
    * Read an object from the process.
    * This will block until the message is available and may currently 
    * block forever!
-   * @return
-   * @throws IOException 
+   * @return the object sent from the process
    */
   public abstract Object readObject();
   
   
   /**
    * Send an object to the process.
-   * @param object 
+   * @param message the object to send
    */
   public abstract void writeObject(Object message);
   
   /**
    * Check if the external process is running.
-   * @return 
+   * @return flag indicating if the process is alive
    */
   public boolean isAlive() {
     return !need2start();
   }
 
+  /**
+   * Wait for the the process.
+   * @return the exit code of the process or Integer.MIN_VALUE if interrupted
+   */
   public int waitFor() {
-    int exitCode = 0;
+    int exitCode;
     try {
       // wait until the process finishes
       exitCode = process.waitFor();
@@ -126,16 +129,13 @@ public abstract class ProcessBase
   protected abstract void stopInteraction();
   
   
-  /**
-   * Copy the stream output to the logger using the given logging level.
-   * @param stream 
-   */
   protected void logStream(final InputStream stream, Level level) {
     // Not sure how to do this yet, probably a thread that copies the 
     // stream to another stream which is our own implementation that
     // actually writes to the logger
     // For now we do nothing at all
     loggerThread = new Thread() {
+      @Override
       public void run() {
         try {
           IOUtils.copy(stream, System.err);
@@ -171,12 +171,11 @@ public abstract class ProcessBase
     return ret;
   }
   
-  /**
+  /*
    * Does an in-place update of the command to conform to what the OS expects.
    * This is mainly about dealing with commands and arguments that contain spaces for now.
    * On a Windows-like system, everything that contains spaces is surrounded with double quotes.
    * On a Linux-like system, spaces are escaped with a backslash.
-   * @param command 
    */
   protected void updateCommand4OS(List<String> command) {
     boolean linuxLike = System.getProperty("file.separator").equals("/");

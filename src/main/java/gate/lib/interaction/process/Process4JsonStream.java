@@ -1,5 +1,6 @@
 package gate.lib.interaction.process;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +14,10 @@ import com.fasterxml.jackson.databind.*;
 import java.util.HashMap;
 import java.util.Map;
 /**
- * Minimalist class for exchanging objects through JSON
+ * A class representing a process that communicates via JSON over stdin/stout. 
  * 
+ * 
+ * <p>
  * NOTE: at the moment, reading from the process can block forever, there is
  * no timeout! 
  */
@@ -52,7 +55,7 @@ public class Process4JsonStream extends ProcessBase
   BufferedReader ir;
   PrintStream ps;
   
-  
+  @Override
   public Object readObject() {
     try {
       synchronized(synchronizer) {
@@ -66,16 +69,13 @@ public class Process4JsonStream extends ProcessBase
         Object obj = mapper.readValue(json,Map.class);
         return obj;
       }
-    } catch (Exception ex) {
+    } catch (IOException ex) {
       throw new RuntimeException("Problem when reading from object stream",ex);
     }
   }
   
   
-  /**
-   * Send a message to the process.
-   * @param object 
-   */
+  @Override
   public void writeObject(Object object) {
     try {
       synchronized(synchronizer) {
@@ -83,15 +83,12 @@ public class Process4JsonStream extends ProcessBase
         ps.println(json);
         ps.flush();
       }
-    } catch (Exception ex) {
+    } catch (JsonProcessingException ex) {
       throw new RuntimeException("Problem when writing to output connection",ex);
     }
   }
   
-  /**
-   * Check if the external process is running.
-   * @return 
-   */
+  @Override
   public boolean isAlive() {
     return !need2start();
   }

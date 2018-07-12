@@ -48,21 +48,19 @@ public class Process4ObjectStream extends ProcessBase
   }
   
   
+  @Override
   public Object readObject() {
     try {
       synchronized(synchronizer) {
         return ois.readObject();
       }
-    } catch (Exception ex) {
+    } catch (IOException | ClassNotFoundException ex) {
       throw new RuntimeException("Problem when reading from object stream",ex);
     }
   }
   
   
-  /**
-   * Send a message to the process.
-   * @param object 
-   */
+  @Override
   public void writeObject(Object object) {
     try {
       synchronized(synchronizer) {
@@ -74,10 +72,7 @@ public class Process4ObjectStream extends ProcessBase
     }
   }
   
-  /**
-   * Check if the external process is running.
-   * @return 
-   */
+  @Override
   public boolean isAlive() {
     return !need2start();
   }

@@ -51,26 +51,17 @@ public class ProcessSimple extends ProcessBase
   
   
 
-  /**
-   * This always returns null for this class.
-   * @return 
-   */
+  @Override
   public Object readObject() {
     return null;
   }
   
   
-  /**
-   * Does nothing.
-   * @param object 
-   */
+  @Override
   public void writeObject(Object object) {
   }
   
-  /**
-   * Check if the external process is running.
-   * @return 
-   */
+  @Override
   public boolean isAlive() {
     return !need2start();
   }
