@@ -9,7 +9,10 @@ import java.io.PrintStream;
 import java.util.Map;
 
 /**
- *
+ * A simple process that echoes back the string data it receives. 
+ * 
+ * This is for testing only.
+ * 
  * @author Johann Petrak
  */
 public class EchoStream {

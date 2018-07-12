@@ -13,6 +13,7 @@ import org.apache.log4j.Level;
 
 /**
  * Minimalist base class for exchanging objects with a command line process.
+ * 
  * The various subclasses of this implement more specific ways of how 
  * the data actually gets exchanged with the process.
  */

@@ -6,7 +6,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 /**
- *
+ * A simple process that will echo back the object stream data it gets.
+ * 
+ * This reads object stream data from standard input and echoes the data
+ * back to standard output. This is for testing only.
+ * 
  * @author Johann Petrak
  */
 public class EchoObjectStream {

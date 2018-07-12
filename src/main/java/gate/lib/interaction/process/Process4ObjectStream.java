@@ -11,8 +11,8 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 /**
- * Minimalist class for exchanging objects through obejct streams  with a command line process.
- * 
+ * Minimalist class for exchanging objects through object streams  with a command line process.
+ * <p>
  * NOTE: at the moment, reading from the process can block forever, there is
  * no timeout! 
  */

@@ -15,10 +15,10 @@ import java.util.Map;
  * 
  * This just sends or retrieves arbitrary lines of String which could be 
  * JSON we already have or want to parse ourself, or anything else. 
- * 
+ * <p>
  * Note: the string being sent over this connection in either direction should
  * NOT contain any newline character!
- * 
+ * <p>
  * NOTE: at the moment, reading from the process can block forever, there is
  * no timeout! 
  */
