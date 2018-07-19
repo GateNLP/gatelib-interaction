@@ -33,22 +33,45 @@ public class Process4StringStream extends ProcessBase
   private Process4StringStream() {
   }
   
-  BufferedReader ir;
-  PrintStream ps;
+  private BufferedReader ir;
+  private PrintStream ps;
   
+  /**
+   * Factory method to create a process that exchanges strings over stdin/stdout.
+   * @param workingDirectory directory to use as a working directory by the process
+   * @param env environment variable settings
+   * @param command the command to run, as a list of strings
+   * @return the initialised process instance
+   */
   public static Process4StringStream create(File workingDirectory, Map<String,String> env,  List<String> command) {
     Process4StringStream ret = new Process4StringStream();    
-    if(workingDirectory != null) ret.workingDir = workingDirectory;
-    if(env != null) ret.envvars.putAll(env);
+    if(workingDirectory != null) {
+      ret.workingDir = workingDirectory;
+    }
+    if(env != null) {
+      ret.envvars.putAll(env);
+    }
     ret.command.addAll(command);
     ret.updateCommand4OS(ret.command);
     ret.ensureProcess();
     return ret;
   }
+  
+  /**
+   * Factory method to create a process that exchanges Strings over stdin/stdout.
+   * @param workingDirectory directory to use as a working directory by the process
+   * @param env environment variable settings
+   * @param command the command to run, as a list of arguments to the method
+   * @return the initialised process instance
+   */
   public static Process4StringStream create(File workingDirectory, Map<String,String> env,  String... command) {
     Process4StringStream ret = new Process4StringStream();    
-    if(workingDirectory != null) ret.workingDir = workingDirectory;
-    if(env != null) ret.envvars.putAll(env);
+    if(workingDirectory != null) {
+      ret.workingDir = workingDirectory;
+    }
+    if(env != null) {
+      ret.envvars.putAll(env);
+    }
     ret.command.addAll(Arrays.asList(command));    
     ret.updateCommand4OS(ret.command);
     ret.ensureProcess(); 
@@ -133,6 +156,11 @@ public class Process4StringStream extends ProcessBase
   }
   
   ////////////////////////////////////////////////
+
+  /**
+   * Simple main method for testing.
+   * @param args not used
+   */
   
   public static void main(String[] args) {
     System.err.println("Running the Process4StringStream class");

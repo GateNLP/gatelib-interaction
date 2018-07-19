@@ -22,12 +22,12 @@ public abstract class ProcessBase
 
   private static final Logger LOGGER = Logger.getLogger(ProcessBase.class.getName());
   
-  protected List<String> command = new ArrayList<String>();
+  protected List<String> command = new ArrayList<>();
   protected ProcessBuilder builder = null;
   protected Process process = null;
   protected File workingDir = new File(".");
   protected Thread loggerThread;
-  protected Map<String,String> envvars = new HashMap<String,String>();
+  protected Map<String,String> envvars = new HashMap<>();
     
   /**
    * Make sure the process is running.
