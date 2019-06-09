@@ -3,8 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.jpetrak.gate.lib</groupId>
   <artifactId>interaction</artifactId>
-  <packaging>jar</packaging>
-  <version>3.8.2</version>
+  <version>3.9</version>
   <name>gatelib-interaction</name>
   <description>
     A library that implements a number of different ways for running a program
@@ -130,7 +129,7 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.6.3</version>
+      <version>[2.9.9,)</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -143,4 +142,5 @@
       <version>1.2.17</version>
     </dependency>
   </dependencies>
+  <packaging>jar</packaging>
 </project>
