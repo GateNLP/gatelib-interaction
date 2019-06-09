@@ -37,11 +37,9 @@
     </license>
   </licenses>
   <url>https://github.com/GateNLP/gatelib-interaction</url>
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-
   <build>
     <plugins>
       <!-- this is just needed for the site goal -->
@@ -161,6 +159,20 @@
       <version>1.2.17</version>
     </dependency>
   </dependencies>
+  <distributionManagement>
+    <repository>
+      <id>gate-oss</id>
+      <name>Sonatype OSS staging</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+      <layout>default</layout>
+    </repository>
+    <snapshotRepository>
+      <id>gate.snapshots</id>
+      <name>GATE Snapshots Repository</name>
+      <url>https://repo.gate.ac.uk/content/repositories/snapshots</url>
+      <layout>default</layout>
+    </snapshotRepository>
+  </distributionManagement>
   <packaging>jar</packaging>
   <modelVersion>4.0.0</modelVersion>
 </project>
