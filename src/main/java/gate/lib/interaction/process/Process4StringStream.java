@@ -71,7 +71,10 @@ public class Process4StringStream extends ProcessBase
   }
   
   
-  @Override
+  /**
+   * Send a message to the process.
+   * @param object  object to send
+   */
   public void writeObject(Object object) {
     try {
       synchronized(synchronizer) {
@@ -84,6 +87,10 @@ public class Process4StringStream extends ProcessBase
     }
   }
   
+  /**
+   * Check if the external process is running.
+   * @return flag 
+   */
   @Override
   public boolean isAlive() {
     return !need2start();
@@ -115,6 +122,7 @@ public class Process4StringStream extends ProcessBase
     } catch (IOException ex) {
       throw new RuntimeException("Could not create input connection",ex);      
     }
+    logStream(process.getErrorStream(), System.out);
     //System.err.println("DONE setting up the interaction");
   }
 

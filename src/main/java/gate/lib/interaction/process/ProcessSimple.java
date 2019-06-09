@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -51,25 +52,44 @@ public class ProcessSimple extends ProcessBase
   
   
 
+  /**
+   * This always returns null for this class.
+   * @return null
+   */
   @Override
   public Object readObject() {
     return null;
   }
   
   
+  /**
+   * Does nothing.
+   * @param object to send
+   */
   @Override
   public void writeObject(Object object) {
   }
   
+  /**
+   * Check if the external process is running.
+   * @return  flag
+   */
   @Override
   public boolean isAlive() {
     return !need2start();
   }
   
   ///////////////////////////////////////////////////////////////////
+
+    /**
+     * Copy stream
+     * @param processStream to copy
+     * @param ourStream where to copy
+     */
   
   protected void copyStream(final InputStream processStream, final OutputStream ourStream) {
     Thread copyThread = new Thread() {
+      @Override
       public void run() {
         try {
           IOUtils.copy(processStream, ourStream);
@@ -92,6 +112,7 @@ public class ProcessSimple extends ProcessBase
     } catch (IOException ex) {
       //
     }
+    logStream(process.getErrorStream(), System.out);
   }
 
   @Override

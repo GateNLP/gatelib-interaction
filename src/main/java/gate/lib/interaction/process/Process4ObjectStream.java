@@ -60,6 +60,10 @@ public class Process4ObjectStream extends ProcessBase
   }
   
   
+  /**
+   * Send a message to the process.
+   * @param object  the object to send
+   */
   @Override
   public void writeObject(Object object) {
     try {
@@ -72,6 +76,10 @@ public class Process4ObjectStream extends ProcessBase
     }
   }
   
+  /**
+   * Check if the external process is running.
+   * @return the indicator if running or not
+   */
   @Override
   public boolean isAlive() {
     return !need2start();
@@ -105,6 +113,7 @@ public class Process4ObjectStream extends ProcessBase
     } catch (IOException ex) {
       throw new RuntimeException("Could not create object input stream",ex);      
     }
+    logStream(process.getErrorStream(), System.out);
   }
 
   @Override

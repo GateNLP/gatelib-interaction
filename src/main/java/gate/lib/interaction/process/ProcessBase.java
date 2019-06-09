@@ -3,17 +3,16 @@ package gate.lib.interaction.process;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
 
 /**
  * Minimalist base class for exchanging objects with a command line process.
- * 
  * The various subclasses of this implement more specific ways of how 
  * the data actually gets exchanged with the process.
  */
@@ -22,25 +21,24 @@ public abstract class ProcessBase
 
   private static final Logger LOGGER = Logger.getLogger(ProcessBase.class.getName());
   
-  protected List<String> command = new ArrayList<String>();
+  protected List<String> command = new ArrayList<>();
   protected ProcessBuilder builder = null;
   protected Process process = null;
   protected File workingDir = new File(".");
   protected Thread loggerThread;
-  protected Map<String,String> envvars = new HashMap<String,String>();
+  protected Map<String,String> envvars = new HashMap<>();
     
   /**
    * Make sure the process is running.
    * Returns true if the process was started freshly, false if it was 
    * already running.
    * 
-   * @return true if started, false if already running
-   * 
+   * @return flag 
    */
   public boolean ensureProcess() {
     if(need2start()) {
-      System.err.println("ProcessBase: running command:");
-      for(int i=0; i<command.size();i++) { System.err.println(i+": "+command.get(i)); }
+      // System.err.println("ProcessBase: running command:");
+      // for(int i=0; i<command.size();i++) { System.err.println(i+": "+command.get(i)); }
       builder = new ProcessBuilder(command);
       builder.directory(workingDir);
       Map<String,String> env = builder.environment();
@@ -50,9 +48,6 @@ public abstract class ProcessBase
       } catch (IOException ex) {
         throw new RuntimeException("Could not start the process "+command,ex);
       }
-      // copy the standard output of the process to the logger
-      logStream(process.getErrorStream(),Level.ERROR);
-      // do the class-specific setup of how to interact
       setupInteraction();
       return true;
     } else {
@@ -65,29 +60,25 @@ public abstract class ProcessBase
    * Read an object from the process.
    * This will block until the message is available and may currently 
    * block forever!
-   * @return the object sent from the process
+   * @return  object read
    */
   public abstract Object readObject();
   
   
   /**
-   * Send an object to the process.
-   * @param message the object to send
+   * Send an object to the process. 
+   * @param message object to send
    */
   public abstract void writeObject(Object message);
   
   /**
    * Check if the external process is running.
-   * @return flag indicating if the process is alive
+   * @return  flag
    */
   public boolean isAlive() {
     return !need2start();
   }
 
-  /**
-   * Wait for the the process.
-   * @return the exit code of the process or Integer.MIN_VALUE if interrupted
-   */
   public int waitFor() {
     int exitCode;
     try {
@@ -128,22 +119,30 @@ public abstract class ProcessBase
   
   protected abstract void stopInteraction();
   
-  
-  protected void logStream(final InputStream stream, Level level) {
-    // Not sure how to do this yet, probably a thread that copies the 
-    // stream to another stream which is our own implementation that
-    // actually writes to the logger
-    // For now we do nothing at all
-    loggerThread = new Thread() {
+  private static class MyLoggerThread extends Thread {
+      InputStream stream;
+      OutputStream outstream;
+      public MyLoggerThread(InputStream stream, OutputStream outstream) {
+        this.stream = stream;
+        this.outstream = outstream;
+      }
       @Override
       public void run() {
         try {
-          IOUtils.copy(stream, System.err);
+          IOUtils.copy(stream, this.outstream);
         } catch (IOException ex) {
           LOGGER.error("Could not copy standard error from the process to our own standard error", ex);
         }
-      }
-    };
+      }  
+  }
+  
+  /**
+   * Copy the stream output to the logger using the given logging level.
+   * @param stream stream to copy 
+   * @param outstream where to copy it to
+   */
+  protected void logStream(final InputStream stream, OutputStream outstream) {
+    loggerThread = new MyLoggerThread(stream, outstream);
     loggerThread.setDaemon(true);
     loggerThread.start();
   }
@@ -171,11 +170,12 @@ public abstract class ProcessBase
     return ret;
   }
   
-  /*
+  /**
    * Does an in-place update of the command to conform to what the OS expects.
    * This is mainly about dealing with commands and arguments that contain spaces for now.
    * On a Windows-like system, everything that contains spaces is surrounded with double quotes.
    * On a Linux-like system, spaces are escaped with a backslash.
+   * @param command command
    */
   protected void updateCommand4OS(List<String> command) {
     boolean linuxLike = System.getProperty("file.separator").equals("/");

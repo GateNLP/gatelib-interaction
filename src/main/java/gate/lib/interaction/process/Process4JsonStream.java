@@ -13,11 +13,10 @@ import org.apache.log4j.Logger;
 import com.fasterxml.jackson.databind.*;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.log4j.Level;
 /**
- * A class representing a process that communicates via JSON over stdin/stout. 
+ * Minimalist class for exchanging objects through JSON
  * 
- * 
- * <p>
  * NOTE: at the moment, reading from the process can block forever, there is
  * no timeout! 
  */
@@ -55,19 +54,24 @@ public class Process4JsonStream extends ProcessBase
   BufferedReader ir;
   PrintStream ps;
   
+  
   @Override
   public Object readObject() {
     try {
       synchronized(synchronizer) {
         String json = ir.readLine();
         //System.err.println("DEBUG: got json line: "+json);
-        while(!json.trim().startsWith("{")) {
+        while(json != null && !json.trim().startsWith("{")) {
           // System.err.println("DEBUG: Ignoring non-map response: "+json);
           json = ir.readLine();
           // System.err.println("DEBUG: got another line: "+json);
         }
-        Object obj = mapper.readValue(json,Map.class);
-        return obj;
+        if(json == null) {
+          return null;
+        } else {
+          Object obj = mapper.readValue(json,Map.class);
+          return obj;
+        }
       }
     } catch (IOException ex) {
       throw new RuntimeException("Problem when reading from object stream",ex);
@@ -75,6 +79,10 @@ public class Process4JsonStream extends ProcessBase
   }
   
   
+  /**
+   * Send a message to the process.
+   * @param object the object to send
+   */
   @Override
   public void writeObject(Object object) {
     try {
@@ -88,6 +96,10 @@ public class Process4JsonStream extends ProcessBase
     }
   }
   
+  /**
+   * Check if the external process is running.
+   * @return flag flag
+   */
   @Override
   public boolean isAlive() {
     return !need2start();
@@ -119,6 +131,7 @@ public class Process4JsonStream extends ProcessBase
     } catch (IOException ex) {
       throw new RuntimeException("Could not create input connection",ex);      
     }
+    logStream(process.getErrorStream(), System.out);
     //System.err.println("DONE setting up the interaction");
   }
 
@@ -144,12 +157,12 @@ public class Process4JsonStream extends ProcessBase
             "java -cp target/interaction-1.0-SNAPSHOT.jar:target/dependency/* gate.lib.interaction.process.EchoStream");
     //String someString = "this is some string";
     System.err.println("Right before writing to process");
-    Map m = new HashMap();
+    Map<String,Object> m = new HashMap<>();
     m.put("field1",12);
     m.put("field2","asasa");
     pr.writeObject(m);
     System.err.println("Right before reading from process");
-    Map ret = (Map)pr.readObject();
+    Map<?,?> ret = (Map<?,?>)pr.readObject();
     System.err.println("Got the object back: "+ret);
     //System.err.println("Writing another one (1234)");
     //pr.writeObject("1234");
