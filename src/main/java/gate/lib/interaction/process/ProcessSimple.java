@@ -14,13 +14,9 @@ import org.apache.log4j.Logger;
 /**
  * Minimalist class for running an external command. 
  * 
- * This simple passes on
- * standard output and error to our own process and closes standard input
- * as soon as possible.
+ * This simply passes on standard output and error to our own process and 
+ * closes standard input as soon as possible.
  * The read and write methods for this class do nothing.
- * 
- * 
- * 
  */
 public class ProcessSimple extends ProcessBase
 {
@@ -31,19 +27,42 @@ public class ProcessSimple extends ProcessBase
 
   private ProcessSimple() {} 
   
+  /**
+   * Factory class to create a process instance.
+   * @param workingDirectory directory to use as a working directory by the process
+   * @param env environment variable settings
+   * @param command the command to run, as a list of strings
+   * @return the initialised process instance
+   */
   public static ProcessSimple create(File workingDirectory, Map<String,String> env,  List<String> command) {
     ProcessSimple ret = new ProcessSimple();
-    if(workingDirectory != null) ret.workingDir = workingDirectory;
-    if(env != null) ret.envvars.putAll(env);
+    if(workingDirectory != null) {
+      ret.workingDir = workingDirectory;
+    }
+    if(env != null) {
+      ret.envvars.putAll(env);
+    }
     ret.command.addAll(command);
     ret.updateCommand4OS(ret.command);
     ret.ensureProcess();
     return ret;
   }
+
+  /**
+   * Factory class to create a process instance.
+   * @param workingDirectory directory to use as a working directory by the process
+   * @param env environment variable settings
+   * @param command the command to run, as a list of strings
+   * @return the initialised process instance
+   */
   public static ProcessSimple create(File workingDirectory, Map<String,String> env,  String... command) {
     ProcessSimple ret = new ProcessSimple();
-    if(workingDirectory != null) ret.workingDir = workingDirectory;
-    if(env != null) ret.envvars.putAll(env);
+    if(workingDirectory != null) {
+      ret.workingDir = workingDirectory;
+    }
+    if(env != null) {
+      ret.envvars.putAll(env);
+    }
     ret.command.addAll(Arrays.asList(command));    
     ret.updateCommand4OS(ret.command);
     ret.ensureProcess(); 
@@ -119,10 +138,5 @@ public class ProcessSimple extends ProcessBase
   protected void stopInteraction() {
   }
   
-  ////////////////////////////////////////////////
-  
-  public static void main(String[] args) {
-    // TODO
-  }
   
 }

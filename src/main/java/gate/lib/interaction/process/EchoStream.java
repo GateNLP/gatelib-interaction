@@ -16,8 +16,15 @@ import java.util.Map;
  * @author Johann Petrak
  */
 public class EchoStream {
-  // Simple process which will run forever and echo whatever it receives on
-  // standard input as String to standard output as String
+
+  /**
+   * Simple echo process for testing.
+   * Simple process which will run forever and echo whatever it receives on
+   * standard input as String to standard output as String
+   * @param args not used
+   * @throws IOException passes on IOException
+   * @throws ClassNotFoundException  passes on ClassNotFoundException
+   */
   public static void main(String[] args) throws IOException, ClassNotFoundException {
     ObjectMapper mapper = new ObjectMapper();
     PrintStream oos = new PrintStream(System.out);
@@ -41,6 +48,8 @@ public class EchoStream {
       } else if(line.startsWith("{")) {
         try {
           Map<?,?> m = (Map<?,?>)mapper.readValue(line,Map.class);
+          // @SuppressWarnings("unchecked")
+          // Map<String,Object> m = mapper.readValue(line,Map.class);
           String val = (String)m.get("cmd");
           if(val != null && val.equals("STOP")) {
             System.err.println("Received the stop signal from JSON");

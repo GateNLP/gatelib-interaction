@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 import com.fasterxml.jackson.databind.*;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.log4j.Level;
 /**
  * Minimalist class for exchanging objects through JSON
  * 
@@ -31,19 +30,44 @@ public class Process4JsonStream extends ProcessBase
 
   private Process4JsonStream() { }
   
+  /**
+   * Factory method to create a process that exchanges JSON over stdin/stdout.
+   * 
+   * @param workingDirectory the directory to use as a working directory
+   * @param env environment variable settings
+   * @param command the command to run with each part of the command as a separate list element
+   * @return the initialised process instance
+   */
   public static Process4JsonStream create(File workingDirectory, Map<String,String> env,  List<String> command) {
     Process4JsonStream ret = new Process4JsonStream();    
-    if(workingDirectory != null) ret.workingDir = workingDirectory;
-    if(env != null) ret.envvars.putAll(env);
+    if(workingDirectory != null) {
+      ret.workingDir = workingDirectory;
+    }
+    if(env != null) {
+      ret.envvars.putAll(env);
+    }
     ret.command.addAll(command);
     ret.updateCommand4OS(ret.command);
     ret.ensureProcess();
     return ret;
   }
+  
+  /**
+   * Factory method to create a process that exchanges JSON over stdin/stdout. 
+   * 
+   * @param workingDirectory the directory to use as a working directory
+   * @param env environment variable settings
+   * @param command the command to run with each part of the command as a separate argument
+   * @return the initialised process instance
+   */
   public static Process4JsonStream create(File workingDirectory, Map<String,String> env,  String... command) {
     Process4JsonStream ret = new Process4JsonStream();    
-    if(workingDirectory != null) ret.workingDir = workingDirectory;
-    if(env != null) ret.envvars.putAll(env);
+    if(workingDirectory != null) {
+      ret.workingDir = workingDirectory;
+    }
+    if(env != null) {
+      ret.envvars.putAll(env);
+    }
     ret.command.addAll(Arrays.asList(command));    
     ret.updateCommand4OS(ret.command);
     ret.ensureProcess(); 
@@ -51,8 +75,8 @@ public class Process4JsonStream extends ProcessBase
     
   }
   
-  BufferedReader ir;
-  PrintStream ps;
+  private BufferedReader ir;
+  private PrintStream ps;
   
   
   @Override
@@ -150,7 +174,13 @@ public class Process4JsonStream extends ProcessBase
   }
   
   ////////////////////////////////////////////////
+
+  /**
+   * Simple main for testing.
+   * @param args unused
+   */
   
+  @SuppressWarnings("unchecked")
   public static void main(String[] args) {
     System.err.println("Running the Process4JsonStream class");
     Process4JsonStream pr = Process4JsonStream.create(new File("."),null,
@@ -164,11 +194,6 @@ public class Process4JsonStream extends ProcessBase
     System.err.println("Right before reading from process");
     Map<?,?> ret = (Map<?,?>)pr.readObject();
     System.err.println("Got the object back: "+ret);
-    //System.err.println("Writing another one (1234)");
-    //pr.writeObject("1234");
-    //System.err.println("Right before reading again");
-    //obj = pr.readObject();
-    //System.err.println("Got "+obj);
     System.err.println("Shutting down");
     pr.stop();
   }

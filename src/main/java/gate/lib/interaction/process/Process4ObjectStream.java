@@ -23,24 +23,47 @@ public class Process4ObjectStream extends ProcessBase
   
   private final Object synchronizer = new Object();
 
-  ObjectInputStream ois;
-  ObjectOutputStream oos;
+  private ObjectInputStream ois;
+  private ObjectOutputStream oos;
   
   private Process4ObjectStream() {}
   
+  /**
+   * Factory method to create a process that exchanges ObjectStream data.
+   * @param workingDirectory directory to use as a working directory by the process
+   * @param env environment variable settings
+   * @param command the command to run, as a list of String to the method
+   * @return the initialised process instance
+   */
   public static Process4ObjectStream create(File workingDirectory, Map<String,String> env,  List<String> command) {
     Process4ObjectStream ret = new Process4ObjectStream();
-    if(workingDirectory != null) ret.workingDir = workingDirectory;
-    if(env != null) ret.envvars.putAll(env);
+    if(workingDirectory != null) {
+      ret.workingDir = workingDirectory;
+    }
+    if(env != null) {
+      ret.envvars.putAll(env);
+    }
     ret.command.addAll(command);
     ret.updateCommand4OS(ret.command);
     ret.ensureProcess();
     return ret;
   }
+
+  /**
+   * Factory method to create a process that exchanges ObjectStream data.
+   * @param workingDirectory directory to use as a working directory by the process
+   * @param env environment variable settings
+   * @param command the command to run, as a list of arguments to the method
+   * @return the initialised process instance
+   */
   public static Process4ObjectStream create(File workingDirectory, Map<String,String> env,  String... command) {
     Process4ObjectStream ret = new Process4ObjectStream();
-    if(workingDirectory != null) ret.workingDir = workingDirectory;
-    if(env != null) ret.envvars.putAll(env);
+    if(workingDirectory != null) {
+      ret.workingDir = workingDirectory;
+    }
+    if(env != null) {
+      ret.envvars.putAll(env);
+    }
     ret.command.addAll(Arrays.asList(command));    
     ret.updateCommand4OS(ret.command);
     ret.ensureProcess(); 
@@ -131,6 +154,11 @@ public class Process4ObjectStream extends ProcessBase
   }
   
   ////////////////////////////////////////////////
+
+  /**
+   * Main method for testing.
+   * @param args not used
+   */
   
   public static void main(String[] args) {
     System.err.println("Running the Process4ObjectStream class");

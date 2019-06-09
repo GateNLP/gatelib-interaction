@@ -14,9 +14,13 @@ import java.io.ObjectOutputStream;
  * @author Johann Petrak
  */
 public class EchoObjectStream {
-  // Simple process which will run forever and echo whatever it receives on
-  // standard input as an object stream to standard output as an object output
-  // stream (the objects do get de-serialized and re-serialized)
+
+  /**
+   * Simple main method for testing
+   * @param args not used
+   * @throws IOException passes on IOException
+   * @throws ClassNotFoundException passes on ClassNotFoundException
+   */
   public static void main(String[] args) throws IOException, ClassNotFoundException {
     ObjectOutputStream oos = new ObjectOutputStream(System.out);
     // Send the hello object

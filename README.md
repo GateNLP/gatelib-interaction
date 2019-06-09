@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/johann-petrak/gatelib-interaction.svg?branch=master)](https://travis-ci.org/johann-petrak/gatelib-interaction)
+[![Build Status](https://travis-ci.org/GateNLP/gatelib-interaction.svg?branch=master)](https://travis-ci.org/GateNLP/gatelib-interaction)
 
 # gatelib-interaction
 
