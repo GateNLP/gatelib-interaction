@@ -191,16 +191,5 @@ public class ProcessHttp {
     return "";
   }
 
-  /**
-   * Send some binary data and process it.
-   * @param toProcess the data to run the command on
-   * @param command the server command to invoke, may be null
-   * @param parms any additional parameters, may be null
-   * @return the processed data, as String
-   */
-  public String processString(String toProcess, String command, Map<String,String> parms) {
-    // TODO
-    return "";
-  }
   
 }
