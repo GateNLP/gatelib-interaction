@@ -2,13 +2,9 @@ package gate.lib.interaction.process;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -23,14 +19,13 @@ public class ProcessSimple extends ProcessBase
 
   private static final Logger LOGGER = Logger.getLogger(ProcessSimple.class.getName());
   
-  private final Object synchronizer = new Object();
-
   private ProcessSimple() {} 
   
   /**
    * Factory class to create a process instance.
-   * @param workingDirectory directory to use as a working directory by the process
-   * @param env environment variable settings
+   * @param workingDirectory directory to use as a working directory by the process.
+   * If null, use the current directory.
+   * @param env environment variable settings, if null, empty.
    * @param command the command to run, as a list of strings
    * @return the initialised process instance
    */
@@ -52,7 +47,7 @@ public class ProcessSimple extends ProcessBase
    * Factory class to create a process instance.
    * @param workingDirectory directory to use as a working directory by the process
    * @param env environment variable settings
-   * @param command the command to run, as a list of strings
+   * @param command the command to run, as additional parameters
    * @return the initialised process instance
    */
   public static ProcessSimple create(File workingDirectory, Map<String,String> env,  String... command) {
@@ -89,38 +84,9 @@ public class ProcessSimple extends ProcessBase
   public void writeObject(Object object) {
   }
   
-  /**
-   * Check if the external process is running.
-   * @return  flag
-   */
-  @Override
-  public boolean isAlive() {
-    return !need2start();
-  }
   
   ///////////////////////////////////////////////////////////////////
 
-    /**
-     * Copy stream
-     * @param processStream to copy
-     * @param ourStream where to copy
-     */
-  
-  protected void copyStream(final InputStream processStream, final OutputStream ourStream) {
-    Thread copyThread = new Thread() {
-      @Override
-      public void run() {
-        try {
-          IOUtils.copy(processStream, ourStream);
-        } catch (IOException ex) {
-          LOGGER.error("Could not copy stream", ex);
-        }
-      }
-    };
-    copyThread.setDaemon(true);
-    copyThread.start();
-  }
-  
   
 
   @Override
@@ -131,7 +97,7 @@ public class ProcessSimple extends ProcessBase
     } catch (IOException ex) {
       //
     }
-    logStream(process.getErrorStream(), System.out);
+    copyStream(process.getErrorStream(), System.err);
   }
 
   @Override

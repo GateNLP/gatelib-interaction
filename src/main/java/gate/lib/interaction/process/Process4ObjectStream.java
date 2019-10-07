@@ -136,11 +136,12 @@ public class Process4ObjectStream extends ProcessBase
     } catch (IOException ex) {
       throw new RuntimeException("Could not create object input stream",ex);      
     }
-    logStream(process.getErrorStream(), System.out);
+    copyStream(process.getErrorStream(), System.out);
   }
 
   @Override
   protected void stopInteraction() {
+    stopRequested = true;
     try {
       ois.close();
     } catch (IOException ex) {

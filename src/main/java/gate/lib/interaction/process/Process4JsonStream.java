@@ -155,12 +155,13 @@ public class Process4JsonStream extends ProcessBase
     } catch (IOException ex) {
       throw new RuntimeException("Could not create input connection",ex);      
     }
-    logStream(process.getErrorStream(), System.out);
+    copyStream(process.getErrorStream(), System.out);
     //System.err.println("DONE setting up the interaction");
   }
 
   @Override
   protected void stopInteraction() {
+    stopRequested = true;
     try {
       ir.close();
     } catch (IOException ex) {

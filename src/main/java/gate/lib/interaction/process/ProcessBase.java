@@ -8,13 +8,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 /**
- * Minimalist base class for exchanging objects with a command line process.
+ * Minimalist base class for implementing subclasses for
+ * exchanging objects with a command line process.
+ * 
  * The various subclasses of this implement more specific ways of how 
  * the data actually gets exchanged with the process.
+ * 
+ * The following methods must be implemented: readObject, writeObject,
+ * setupInteraction, stopInteraction.
+ * 
+ * The standard way to use this class then is to use the factory create
+ * method to get an instance, which will start the process. 
+ * If the instance is one for interacting with the process, use the read/write
+ * methods to send data and receive results according to the agreed protocol.
+ * When done with the interaction and when the process is not longer needed,
+ * call the "stop" method to end it. The stop method should NOT get called
+ * when there is interaction with the process and a pending result has not
+ * yet been retrieved as this may block and cause a deadlock! 
+ * 
+ * 
  */
 public abstract class ProcessBase 
 {
@@ -27,13 +42,21 @@ public abstract class ProcessBase
   protected File workingDir = new File(".");
   protected Thread loggerThread;
   protected Map<String,String> envvars = new HashMap<>();
+  // a flag that we set as soon as termination of the process was requested. 
+  // Implementations can use the stream interaction with the process to
+  // nicely ask for termination through the stopInteraction() method. 
+  protected boolean stopRequested = false;   
     
   /**
    * Make sure the process is running.
-   * Returns true if the process was started freshly, false if it was 
-   * already running.
    * 
-   * @return flag 
+   * Returns true if the process was started freshly, false if it was 
+   * already running / we think it is already running.
+   * 
+   * Throws a runtime exception if anything goes wrong.
+   * 
+   * @return flag indicating if the process was started (true) or already 
+   * running (false)
    */
   public boolean ensureProcess() {
     if(need2start()) {
@@ -58,8 +81,9 @@ public abstract class ProcessBase
   
   /**
    * Read an object from the process.
-   * This will block until the message is available and may currently 
-   * block forever!
+   * 
+   * Depending on the implementation, this may block forever!
+   * 
    * @return  object read
    */
   public abstract Object readObject();
@@ -67,18 +91,32 @@ public abstract class ProcessBase
   
   /**
    * Send an object to the process. 
+   * 
+   * 
    * @param message object to send
    */
   public abstract void writeObject(Object message);
   
   /**
    * Check if the external process is running.
+   * 
+   * This does not actually check if the process is running but rather
+   * returns if we think it is running.
+   * 
    * @return  flag
    */
   public boolean isAlive() {
     return !need2start();
   }
 
+  /**
+   * Wait for the process to finish.
+   * 
+   * Waits for the process to end and returns the exit code, or 
+   * Integer.MIN_VALUE if there was an interruption during the wait. 
+   * 
+   * @return exit code
+   */
   public int waitFor() {
     int exitCode;
     try {
@@ -92,13 +130,18 @@ public abstract class ProcessBase
   
   /**
    * Attempt to stop the external process.
-   * We try all we can to destroy the process, but
-   * there is no guarantee that the process will actually be stopped by this.
+   * This tries to end the process in several stages. First, it will 
+   * call stopInteraction to signal to the process that we want it to end.
+   * If the process does not end after some timeout, we try to end it using
+   * the destroy and destroyForcibly methods, ultimately. 
+   * There is no guarantee that the process gets removed. 
    */
   public void stop() {
+    stopRequested = true;
+    stopInteraction();
     // wait a little so any pending standard error can still be processed
     try {
-      Thread.sleep(500);
+      Thread.sleep(1000);
     } catch (InterruptedException ex) {
       //
     }    
@@ -109,43 +152,77 @@ public abstract class ProcessBase
     // loggerThread.stop();
   }
   
+    /**
+     * Copy stream.
+     * A utility function for copying a process stream to one of our streams
+     * in a separate thread. 
+     * 
+     * @param processStream to copy
+     * @param ourStream where to copy
+     */
   
-  ///////////////////////////////////////////////////////////////////
-  
+  protected void copyStream(final InputStream processStream, final OutputStream ourStream) {
+    loggerThread = new StreamCopier(processStream, ourStream);
+    loggerThread.setDaemon(true);
+    loggerThread.start();
+  }
+
   /**
-   * This handles the exact way of how the communication is set up.
+   * Helper class for copying a process stream.
+   * This class 
    */
-  protected abstract void setupInteraction();
-  
-  protected abstract void stopInteraction();
-  
-  private static class MyLoggerThread extends Thread {
+  private class StreamCopier extends Thread {
       InputStream stream;
       OutputStream outstream;
-      public MyLoggerThread(InputStream stream, OutputStream outstream) {
+      public StreamCopier(InputStream stream, OutputStream outstream) {
         this.stream = stream;
         this.outstream = outstream;
       }
       @Override
       public void run() {
-        try {
-          IOUtils.copy(stream, this.outstream);
-        } catch (IOException ex) {
-          LOGGER.error("Could not copy standard error from the process to our own standard error", ex);
+        byte[] buffer = new byte[1024];
+        int n;
+        while(true) { 
+          if(stopRequested) {
+            break;
+          }
+          try {
+            n = this.stream.read(buffer);
+            // if we have reached EOF, exit the copy loop
+            if(n == -1) {
+              break;
+            }
+          } catch (IOException ex) {
+            LOGGER.error("Could not copy stream from the process to our own stream", ex);
+            break;
+          }
+          try {
+            // if we actually got something in our buffer, write it to our stream
+            outstream.write(buffer);
+          } catch (IOException ex) {
+            LOGGER.error("Could not copy stream from the process to our own stream", ex);
+            break;
+          }
         }
       }  
   }
   
+  
+  
+  ///////////////////////////////////////////////////////////////////
+  
   /**
-   * Copy the stream output to the logger using the given logging level.
-   * @param stream stream to copy 
-   * @param outstream where to copy it to
+   * This handles the exact way of how the communication is set up.
+   * Needs to get implemented by the implementing subclass.
    */
-  protected void logStream(final InputStream stream, OutputStream outstream) {
-    loggerThread = new MyLoggerThread(stream, outstream);
-    loggerThread.setDaemon(true);
-    loggerThread.start();
-  }
+  protected abstract void setupInteraction();
+  
+  /**
+   * How to end the interaction.
+   * Needs to get implemented by the implementing subclass.
+   */
+  protected abstract void stopInteraction();
+  
   
   protected boolean need2start() {
     boolean ret = false;

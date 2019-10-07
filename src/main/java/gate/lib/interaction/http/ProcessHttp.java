@@ -188,6 +188,8 @@ public class ProcessHttp {
    */
   public String processString(String toProcess, String command, Map<String,String> parms) {
     // TODO
+    // TODO: make sure the string to send does not have new lines - either replace
+    // with spaces or escape (could add a set option method for that)
     return "";
   }
 
