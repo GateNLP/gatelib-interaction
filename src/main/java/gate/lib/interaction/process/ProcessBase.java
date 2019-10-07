@@ -145,7 +145,14 @@ public abstract class ProcessBase
     } catch (InterruptedException ex) {
       //
     }    
-    process.destroy(); 
+    if(process.isAlive()) {
+      process.destroy(); 
+    }
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException ex) {
+      //
+    }    
     if(process.isAlive()) {
       process.destroyForcibly();
     }    
