@@ -8,6 +8,7 @@ import gate.lib.interaction.process.*;
 import java.io.File;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import org.junit.Test;
 
 /**
@@ -31,10 +32,7 @@ public class TestProcess4ObjectStream {
     process.writeObject("STOP");
     // stop process
     process.stop();
-    // make sure it is stopped
-    // NOTE: this does not seem to work?
-    // TODO
-    // assertFalse(process.isAlive());
+    assertFalse(process.isAlive());
             
   }
   

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
 /**
@@ -25,10 +26,13 @@ import org.apache.log4j.Logger;
  * If the instance is one for interacting with the process, use the read/write
  * methods to send data and receive results according to the agreed protocol.
  * When done with the interaction and when the process is not longer needed,
- * call the "stop" method to end it. The stop method should NOT get called
+ * call the "stop" method to end it. 
+ * 
+ * The stop method should NOT get called
  * when there is interaction with the process and a pending result has not
  * yet been retrieved as this may block and cause a deadlock! 
- * 
+ * Reading from the process when there is nothing available may also cause
+ * a deadlock!
  * 
  */
 public abstract class ProcessBase 
@@ -110,53 +114,57 @@ public abstract class ProcessBase
   }
 
   /**
-   * Wait for the process to finish.
-   * 
-   * Waits for the process to end and returns the exit code, or 
-   * Integer.MIN_VALUE if there was an interruption during the wait. 
-   * 
-   * @return exit code
-   */
-  public int waitFor() {
-    int exitCode;
-    try {
-      // wait until the process finishes
-      exitCode = process.waitFor();
-    } catch (InterruptedException ex) {
-      exitCode = Integer.MIN_VALUE;
-    }
-    return exitCode;
-  }
-  
-  /**
-   * Attempt to stop the external process.
-   * This tries to end the process in several stages. First, it will 
-   * call stopInteraction to signal to the process that we want it to end.
+   * Attempt to stop the external process.This tries to end the process in several stages.First, it will 
+ call stopInteraction to signal to the process that we want it to end.
    * If the process does not end after some timeout, we try to end it using
-   * the destroy and destroyForcibly methods, ultimately. 
-   * There is no guarantee that the process gets removed. 
+ the destroy and destroyForcibly methods, ultimately. 
+ There is no guarantee that the process gets removed. 
+   * @param timeoutPerStage the timeout in milliseconds per attempt to shut down the process
+   * @return the exit value of the process 
    */
-  public void stop() {
+  public int stop(int timeoutPerStage) {
     stopRequested = true;
     stopInteraction();
     // wait a little so any pending standard error can still be processed
     try {
-      Thread.sleep(1000);
+      process.waitFor(timeoutPerStage, TimeUnit.MILLISECONDS);
     } catch (InterruptedException ex) {
       //
     }    
     if(process.isAlive()) {
       process.destroy(); 
+    } else {
+      return process.exitValue();
     }
     try {
-      Thread.sleep(1000);
-    } catch (InterruptedException ex) {
-      //
-    }    
+      process.waitFor(timeoutPerStage, TimeUnit.MILLISECONDS);
+    } catch(InterruptedException ex) {
+      // log this at some point
+    }
     if(process.isAlive()) {
-      process.destroyForcibly();
+      process.destroyForcibly(); 
+    } else {
+      return process.exitValue();
     }    
-    // loggerThread.stop();
+    try {
+      process.waitFor(timeoutPerStage, TimeUnit.MILLISECONDS);
+    } catch(InterruptedException ex) {
+      // log this at some point
+    }
+    if(process.isAlive()) {
+      throw new RuntimeException("Could not terminate process");
+    } else {
+      return process.exitValue();
+    }    
+  }
+  
+  /**
+   * Try to stop the process and return the exit value.
+   * This uses a default timeout of 1000 milliseconds for each phase.
+   * @return the exit value
+   */
+  public int stop() {
+    return stop(1000);
   }
   
     /**
@@ -176,7 +184,7 @@ public abstract class ProcessBase
 
   /**
    * Helper class for copying a process stream.
-   * This class 
+   * This class copies the input stream to the output stream in a thread.
    */
   private class StreamCopier extends Thread {
       InputStream stream;
@@ -190,9 +198,6 @@ public abstract class ProcessBase
         byte[] buffer = new byte[1024];
         int n;
         while(true) { 
-          if(stopRequested) {
-            break;
-          }
           try {
             n = this.stream.read(buffer);
             // if we have reached EOF, exit the copy loop
@@ -238,15 +243,12 @@ public abstract class ProcessBase
     } else if(process==null) {
       ret = true;
     } else if(!process.isAlive()) {
-      System.err.println("Apparently process is alive");
       ret = true;
     } else {
       boolean stillRunning = false;
       try {
         int code = process.exitValue();
-        System.err.println("Exit value is "+code);
       } catch(IllegalThreadStateException ex) {
-        //System.err.println("Got illegalthreadstate");
         stillRunning = true;
       }
       if(!stillRunning) ret = true;

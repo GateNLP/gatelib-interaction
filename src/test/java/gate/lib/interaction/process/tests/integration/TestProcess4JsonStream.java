@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import org.junit.Test;
 
 /**
@@ -60,10 +61,7 @@ public class TestProcess4JsonStream {
     process.writeObject("STOP");
     
     process.stop();
-    // make sure it is stopped
-    // NOTE: this does not seem to work?
-    // TODO
-    // assertFalse(process.isAlive());
+    assertFalse(process.isAlive());
             
   }
   

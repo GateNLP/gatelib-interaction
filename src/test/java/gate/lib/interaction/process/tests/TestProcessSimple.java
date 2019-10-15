@@ -31,26 +31,28 @@ public class TestProcessSimple {
     
     ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     PrintStream oldOut = System.out;
-    System.setOut(new PrintStream(outContent));
-    Map<String,String> env = new HashMap<String,String>();
+    PrintStream newOut = new PrintStream(outContent);
+    System.setOut(newOut);
+    Map<String,String> env = new HashMap<>();
     env.put("ENVVAR", "envvalue");
     ProcessSimple process = 
             ProcessSimple.create(new File("."), env,
             "./src/test/resources/bin/echoenv.sh".split("\\s+",-1));    
     process.stop();
-    System.setOut(oldOut);
+    System.setOut(oldOut);  
+    newOut.close();
     String target = "envvalue\n";
     System.err.println("Out size: "+outContent.size());
     // NOTE: oddly this will return a string that has up to bufsize 0 characters
     // added! This has not happened before, we need to understand this!
     // Added issue #11
     String out = outContent.toString("UTF8");
-    List<Integer> target_list = new ArrayList<Integer>();
+    List<Integer> target_list = new ArrayList<>();
     char[] target_chars = target.toCharArray();
     for(char x : target_chars) {
       target_list.add((int)x);
     }
-    List<Integer> out_list = new ArrayList<Integer>();
+    List<Integer> out_list = new ArrayList<>();
     char[] out_chars = out.toCharArray();
     for(char x : out_chars) {
       out_list.add((int)x);
