@@ -3,7 +3,6 @@ language: java
 script: 
   - mvn test -B
 jdk:
-  - oraclejdk9
   - openjdk8
 git:
   depth: 2
