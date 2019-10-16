@@ -23,8 +23,8 @@ import org.apache.log4j.Logger;
  * 
  * The standard way to use this class then is to use the factory create
  * method to get an instance, which will start the process. 
- * If the instance is one for interacting with the process, use the read/write
- * methods to send data and receive results according to the agreed protocol.
+ * If the instance is one for interacting with the process, use the 
+ * process method to send data and receive a result.
  * When done with the interaction and when the process is not longer needed,
  * call the "stop" method to end it. 
  * 
@@ -82,25 +82,27 @@ public abstract class ProcessBase
     }
   }
   
-  
   /**
-   * Read an object from the process.
+   * Preferred way of interaction: process some data and get back some result.
+   * This expects that data is one "unit" of information that can get 
+   * read by the process on the other side in a single read, e.g. for 
+   * String a single line is usually what should get transferred. 
+   * Equally, the response is read as one unit, so the process on the 
+   * other side is expected to only send a single unit as a response.
+   * Using the writeObject and readObject methods directly can be used
+   * for more complex protocols if needed, but is discouraged.
    * 
-   * Depending on the implementation, this may block forever!
+   * NOTE: if we get an EOF condition when reading the result back from the 
+   * process, this returns null. This is mainly intended to gracefully deal
+   * with the situation that the process was sent a "STOP" command and
+   * shuts down without sending back a response first.
    * 
-   * @return  object read
+   * @param data the data to process 
+   * @return the response 
    */
-  public abstract Object readObject();
+  public abstract Object process(Object data);
   
-  
-  /**
-   * Send an object to the process. 
-   * 
-   * 
-   * @param message object to send
-   */
-  public abstract void writeObject(Object message);
-  
+    
   /**
    * Check if the external process is running.
    * 

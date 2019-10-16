@@ -1,5 +1,6 @@
 package gate.lib.interaction.process;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -70,34 +72,27 @@ public class Process4ObjectStream extends ProcessBase
     return ret;
   }
   
-  
+    
   @Override
-  public Object readObject() {
+  public Object process(Object data) {
     try {
       synchronized(synchronizer) {
-        return ois.readObject();
-      }
-    } catch (IOException | ClassNotFoundException ex) {
-      throw new RuntimeException("Problem when reading from object stream",ex);
-    }
-  }
-  
-  
-  /**
-   * Send a message to the process.
-   * @param object  the object to send
-   */
-  @Override
-  public void writeObject(Object object) {
-    try {
-      synchronized(synchronizer) {
-        oos.writeObject(object);
+        oos.writeObject(data);
         oos.flush();
+        // if we get an end of file, we return null 
+        // This is mainly for the case where the other side got a STOP command
+        // and terminated without sending any response back first.
+        try {
+          return ois.readObject();
+        } catch (EOFException eofex) {
+          return null;
+        }
       }
-    } catch (IOException ex) {
+    } catch (IOException|ClassNotFoundException ex) {
       throw new RuntimeException("Problem when writing to object stream",ex);
     }
   }
+
   
   /**
    * Check if the external process is running.
@@ -168,14 +163,10 @@ public class Process4ObjectStream extends ProcessBase
                     "java -cp target/interaction-1.0-SNAPSHOT.jar gate.lib.interaction.process.EchoObjectStream");
     String someString = "this is some string";
     System.err.println("Right before writing to process");
-    pr.writeObject(someString);
-    System.err.println("Right before reading from process");
-    Object obj = pr.readObject();
+    Object obj = pr.process(someString);
     System.err.println("Got the object back: "+obj);
     System.err.println("Writing another one (1234)");
-    pr.writeObject("1234");
-    System.err.println("Right before reading again");
-    obj = pr.readObject();
+    obj = pr.process("1234");
     System.err.println("Got "+obj);
     System.err.println("Shutting down");
     pr.stop();

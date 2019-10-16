@@ -24,12 +24,11 @@ public class TestProcess4ObjectStream {
             "java -cp target/*  gate.lib.interaction.process.EchoObjectStream".split("\\s+",-1));
     assertTrue(process.isAlive());
     // send something to the echo process
-    process.writeObject("Something");
-    Object obj = process.readObject();
+    Object obj = process.process("Something");
     // make sure we got it back properly
     assertEquals("Something", obj);
     // send the stop signal
-    process.writeObject("STOP");
+    process.process("STOP");
     // stop process
     process.stop();
     assertFalse(process.isAlive());

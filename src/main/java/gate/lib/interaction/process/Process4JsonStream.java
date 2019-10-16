@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.log4j.Logger;
 import com.fasterxml.jackson.databind.*;
+import java.io.EOFException;
 import java.util.HashMap;
 import java.util.Map;
 /**
@@ -78,16 +79,22 @@ public class Process4JsonStream extends ProcessBase
   private BufferedReader ir;
   private PrintStream ps;
   
-  
   @Override
-  public Object readObject() {
+  public Object process(Object data) {
     try {
       synchronized(synchronizer) {
-        String json = ir.readLine();
+        String json = mapper.writeValueAsString(data);
+        ps.println(json);
+        ps.flush();
+        json = ir.readLine();
         //System.err.println("DEBUG: got json line: "+json);
         while(json != null && !json.trim().startsWith("{")) {
           // System.err.println("DEBUG: Ignoring non-map response: "+json);
-          json = ir.readLine();
+          try {
+            json = ir.readLine();
+          } catch (EOFException eofex) {
+            return null;
+          }
           // System.err.println("DEBUG: got another line: "+json);
         }
         if(json == null) {
@@ -98,27 +105,12 @@ public class Process4JsonStream extends ProcessBase
         }
       }
     } catch (IOException ex) {
-      throw new RuntimeException("Problem when reading from object stream",ex);
-    }
-  }
-  
-  
-  /**
-   * Send a message to the process.
-   * @param object the object to send
-   */
-  @Override
-  public void writeObject(Object object) {
-    try {
-      synchronized(synchronizer) {
-        String json = mapper.writeValueAsString(object);
-        ps.println(json);
-        ps.flush();
-      }
-    } catch (JsonProcessingException ex) {
       throw new RuntimeException("Problem when writing to output connection",ex);
     }
   }
+
+  
+  
   
   /**
    * Check if the external process is running.
@@ -191,9 +183,7 @@ public class Process4JsonStream extends ProcessBase
     Map<String,Object> m = new HashMap<>();
     m.put("field1",12);
     m.put("field2","asasa");
-    pr.writeObject(m);
-    System.err.println("Right before reading from process");
-    Map<?,?> ret = (Map<?,?>)pr.readObject();
+    Map<?,?> ret = (Map<?,?>)pr.process(m);
     System.err.println("Got the object back: "+ret);
     System.err.println("Shutting down");
     pr.stop();

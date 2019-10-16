@@ -29,23 +29,19 @@ public class TestProcess4StringStream {
     System.err.println("Test Process4StringStream: is alive");
     // send something to the echo process
     System.err.println("Test Process4StringStream: before write");
-    process.writeObject("This is the first line");
-    System.err.println("Test Process4StringStream: written, before read");
-    String ret = (String)process.readObject();
+    String ret = (String)process.process("This is the first line");
     System.err.println("Test Process4StringStream: after read, got "+ret);
     // make sure we got it back properly
     assertEquals("This is the first line", ret);
     
     // test another one
     System.err.println("Before sending the second line");
-    process.writeObject("1234");
-    System.err.println("Before retrieving the second line");
-    ret = (String)process.readObject();
+    ret = (String)process.process("1234");
     System.err.println("Got this: "+ret);
     assertEquals("1234",ret);
     // stop process
     System.err.println("Sending the STOP command");
-    process.writeObject("STOP");
+    process.process("STOP");
     process.stop();
     assertFalse(process.isAlive());
             

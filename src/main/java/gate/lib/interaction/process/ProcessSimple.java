@@ -65,24 +65,16 @@ public class ProcessSimple extends ProcessBase
   }
   
   
-
   /**
-   * This always returns null for this class.
-   * @return null
+   * This does nothing and returns null.
+   * 
+   * @return always returns null
    */
   @Override
-  public Object readObject() {
+  public Object process(Object data) {
     return null;
   }
-  
-  
-  /**
-   * Does nothing.
-   * @param object to send
-   */
-  @Override
-  public void writeObject(Object object) {
-  }
+
   
   
   ///////////////////////////////////////////////////////////////////

@@ -36,9 +36,7 @@ public class TestProcess4JsonStream {
     m.put("x","y");
     m.put("cmd","do");
     System.err.println("Test Process4JsonStream: before write");
-    process.writeObject(m);
-    System.err.println("Test Process4JsonStream: before read");
-    Map ret = (Map)process.readObject();
+    Map ret = (Map)process.process(m);
     System.err.println("Test Process4JsonStream: after read");
     // make sure we got it back properly
     assertEquals("y", ret.get("x"));
@@ -47,8 +45,7 @@ public class TestProcess4JsonStream {
     List<Double> origs = Arrays.asList(1.1,2.2,3.3,4.4);
     m = new HashMap();
     m.put("vals",origs);
-    process.writeObject(m);
-    ret = (Map)process.readObject();
+    ret = (Map)process.process(m);
     List<Double> retvals = (List)ret.get("vals");
     System.err.println("Array back: "+retvals);
     
@@ -58,7 +55,7 @@ public class TestProcess4JsonStream {
     //m.put("cmd", "STOP");
     //process.writeObject(m);
     // stop process
-    process.writeObject("STOP");
+    process.process("STOP");
     
     process.stop();
     assertFalse(process.isAlive());

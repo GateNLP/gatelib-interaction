@@ -1,6 +1,7 @@
 package gate.lib.interaction.process;
 
 import java.io.BufferedReader;
+import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -81,34 +82,27 @@ public class Process4StringStream extends ProcessBase
   
   
   @Override
-  public Object readObject() {
+  public Object process(Object data) {
     try {
       synchronized(synchronizer) {
-        String str = ir.readLine();
-        //System.err.println("DEBUG: got line: "+str);
-        return str;
-      }
-    } catch (IOException ex) {
-      throw new RuntimeException("Problem when reading from stream",ex);
-    }
-  }
-  
-  
-  /**
-   * Send a message to the process.
-   * @param object  object to send
-   */
-  public void writeObject(Object object) {
-    try {
-      synchronized(synchronizer) {
-        String str = (String)object;
+        String str = (String)data;
         ps.println(str);
         ps.flush();
+        // if we get an end of file, we return null 
+        // This is mainly for the case where the other side got a STOP command
+        // and terminated without sending any response back first.
+        try {
+          str = ir.readLine();
+          return str;
+        } catch (EOFException eofex) {
+          return null;
+        }
       }
-    } catch (Exception ex) {
+    } catch (IOException ex) {
       throw new RuntimeException("Problem when writing to output connection",ex);
     }
   }
+  
   
   /**
    * Check if the external process is running.
@@ -176,14 +170,10 @@ public class Process4StringStream extends ProcessBase
     Process4StringStream pr = Process4StringStream.create(new File("."),null,"java -cp target/interaction-1.0-SNAPSHOT.jar:target/dependency/* gate.lib.interaction.process.EchoStream");
     //String someString = "this is some string";
     System.err.println("Right before writing to process");
-    pr.writeObject("First line sent over");
-    System.err.println("Right before reading from process");
-    String ret = (String)pr.readObject();
+    String ret = (String)pr.process("First line sent over");
     System.err.println("Got the line back: "+ret);
     System.err.println("Writing another one (1234)");
-    pr.writeObject("1234");
-    System.err.println("Right before reading again");
-    ret = (String)pr.readObject();
+    ret = (String)pr.process("1234");
     System.err.println("Got "+ret);
     System.err.println("Shutting down");
     pr.stop();
