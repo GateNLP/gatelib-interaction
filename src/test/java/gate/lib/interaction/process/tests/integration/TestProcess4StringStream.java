@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package gate.lib.interaction.process.tests.integration;
+import gate.lib.interaction.process.pipes.Process4StringStream;
 import gate.lib.interaction.process.*;
 
 import java.io.File;
@@ -23,7 +24,7 @@ public class TestProcess4StringStream {
     System.err.println("Test Process4StringStream: before creation");
     Process4StringStream process = 
             Process4StringStream.create(new File("."), null,
-            "java -cp target/*:target/dependency/*  gate.lib.interaction.process.EchoStream".split("\\s+",-1));
+            "java -cp target/*:target/dependency/*:target/test-classes  gate.lib.interaction.process.tests.integration.EchoStream".split("\\s+",-1));
     System.err.println("Test Process4StringStream: after creation");
     assertTrue(process.isAlive());
     System.err.println("Test Process4StringStream: is alive");

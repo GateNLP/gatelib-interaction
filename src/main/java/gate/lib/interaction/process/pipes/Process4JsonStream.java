@@ -1,4 +1,4 @@
-package gate.lib.interaction.process;
+package gate.lib.interaction.process.pipes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.BufferedReader;
@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.log4j.Logger;
 import com.fasterxml.jackson.databind.*;
+import gate.lib.interaction.process.ProcessBase;
 import java.io.EOFException;
 import java.util.HashMap;
 import java.util.Map;
@@ -86,17 +87,17 @@ public class Process4JsonStream extends ProcessBase
         String json = mapper.writeValueAsString(data);
         ps.println(json);
         ps.flush();
-        json = ir.readLine();
-        //System.err.println("DEBUG: got json line: "+json);
+        // 
+        json = "";
         while(json != null && !json.trim().startsWith("{")) {
-          // System.err.println("DEBUG: Ignoring non-map response: "+json);
           try {
             json = ir.readLine();
+            // System.err.println("DEBUG: got response line: "+json);
           } catch (EOFException eofex) {
             return null;
           }
-          // System.err.println("DEBUG: got another line: "+json);
         }
+        // System.err.println("Using this response line: "+json);
         if(json == null) {
           return null;
         } else {

@@ -1,5 +1,5 @@
 
-package gate.lib.interaction.process;
+package gate.lib.interaction.process.tests.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;

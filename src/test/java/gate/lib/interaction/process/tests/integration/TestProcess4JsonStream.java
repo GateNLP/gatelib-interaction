@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package gate.lib.interaction.process.tests.integration;
+import gate.lib.interaction.process.pipes.Process4JsonStream;
 import gate.lib.interaction.process.*;
 
 import java.io.File;
@@ -14,6 +15,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
@@ -27,7 +29,7 @@ public class TestProcess4JsonStream {
     System.err.println("Test Process4JsonStream: before creation");
     Process4JsonStream process = 
             Process4JsonStream.create(new File("."), null,
-            "java -cp target/*:target/dependency/*  gate.lib.interaction.process.EchoStream".split("\\s+",-1));
+            "java -cp target/*:target/dependency/*:target/test-classes  gate.lib.interaction.process.tests.integration.EchoStream".split("\\s+",-1));
     System.err.println("Test Process4JsonStream: after creation");
     assertTrue(process.isAlive());
     System.err.println("Test Process4JsonStream: is alive");
@@ -39,6 +41,7 @@ public class TestProcess4JsonStream {
     Map ret = (Map)process.process(m);
     System.err.println("Test Process4JsonStream: after read");
     // make sure we got it back properly
+    assertNotNull(ret);
     assertEquals("y", ret.get("x"));
     
     // test sending an array of doubles
@@ -46,6 +49,7 @@ public class TestProcess4JsonStream {
     m = new HashMap();
     m.put("vals",origs);
     ret = (Map)process.process(m);
+    assertNotNull(ret);
     List<Double> retvals = (List)ret.get("vals");
     System.err.println("Array back: "+retvals);
     

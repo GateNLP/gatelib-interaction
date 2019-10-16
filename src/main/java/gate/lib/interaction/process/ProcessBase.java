@@ -12,27 +12,28 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
 /**
- * Minimalist base class for implementing subclasses for
- * exchanging objects with a command line process.
+ * Common base class for all ProcessXxxx subclasses.
  * 
  * The various subclasses of this implement more specific ways of how 
  * the data actually gets exchanged with the process.
- * 
- * The following methods must be implemented: readObject, writeObject,
- * setupInteraction, stopInteraction.
- * 
- * The standard way to use this class then is to use the factory create
- * method to get an instance, which will start the process. 
- * If the instance is one for interacting with the process, use the 
- * process method to send data and receive a result.
- * When done with the interaction and when the process is not longer needed,
- * call the "stop" method to end it. 
- * 
- * The stop method should NOT get called
- * when there is interaction with the process and a pending result has not
- * yet been retrieved as this may block and cause a deadlock! 
- * Reading from the process when there is nothing available may also cause
- * a deadlock!
+ * <p>
+ * The subclasses are divided by communication protocol (pipe, http, websocket)
+ * and within that, by the kind of data to exchange.
+ * <p>
+ * All the implemented classes only provide support for a very basic communication
+ * protocol the follows the following steps:
+ * <ul>
+ * <li>Start the process (optional for http, websocket)
+ * <li>As often as needed: send data and receive a response
+ * <li>End the process (optional for http, websocket)
+ * </ul>
+ * The subclasses provide out-of the box implementations for sending data 
+ * and receiving responses that are Strings or objects and through 
+ * different kinds of serialisation. 
+ * <p> 
+ * Each implementing subclass provides their own way for how to construct
+ * the process instance and start the process. The instance can then
+ * be used to exchange data using the process() method. 
  * 
  */
 public abstract class ProcessBase 
@@ -40,6 +41,8 @@ public abstract class ProcessBase
 
   private static final Logger LOGGER = Logger.getLogger(ProcessBase.class.getName());
   
+  // The command to start the process. not required for all process types!
+  // TODO: replace with the commandline representation of apache commons exe!
   protected List<String> command = new ArrayList<>();
   protected ProcessBuilder builder = null;
   protected Process process = null;

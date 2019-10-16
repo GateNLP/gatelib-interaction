@@ -1,5 +1,6 @@
-package gate.lib.interaction.process;
+package gate.lib.interaction.process.pipes;
 
+import gate.lib.interaction.process.ProcessBase;
 import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;

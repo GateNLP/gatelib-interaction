@@ -1,5 +1,5 @@
 
-package gate.lib.interaction.process;
+package gate.lib.interaction.process.tests.integration;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package gate.lib.interaction.process.tests.integration;
+import gate.lib.interaction.process.pipes.Process4ObjectStream;
 import gate.lib.interaction.process.*;
 import java.io.File;
 import static org.junit.Assert.assertEquals;
@@ -21,7 +22,7 @@ public class TestProcess4ObjectStream {
   public void testAll() {
     Process4ObjectStream process = 
             Process4ObjectStream.create(new File("."), null,
-            "java -cp target/*  gate.lib.interaction.process.EchoObjectStream".split("\\s+",-1));
+            "java -cp target/*:target/test-classes  gate.lib.interaction.process.tests.integration.EchoObjectStream".split("\\s+",-1));
     assertTrue(process.isAlive());
     // send something to the echo process
     Object obj = process.process("Something");
