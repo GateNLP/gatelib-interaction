@@ -8,7 +8,7 @@
     A library that implements a number of different ways for running a program
     in a different process and communicating with that process by sending 
     data back and forth over standard input/output in various formats 
-    (JSON, ObjectStream ... ). 
+    (JSON, ObjectStream ...). 
   </description>
   <developers>
     <developer>
