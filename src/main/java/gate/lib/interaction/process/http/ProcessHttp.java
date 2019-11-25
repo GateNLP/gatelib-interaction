@@ -52,7 +52,11 @@ public class ProcessHttp {
   private File workingDir = new File(".");
   private ProcessSimple process;
   
-  
+  /**
+   * Set the host address.
+   * @param host host address
+   * @return modified ProcessHttp instance
+   */
   public ProcessHttp setHost(String host) {
     this.host = host;
     return this;
@@ -211,6 +215,10 @@ public class ProcessHttp {
     return this;
   }
   
+  /**
+   * Stop the process.
+   * @return ProcessHttp instance
+   */
   public ProcessHttp stop() {
     ensure(ProcessState.STARTED);
     // !!! ONLY actuall send the stop command to the server if we 
