@@ -48,6 +48,27 @@
         <artifactId>maven-site-plugin</artifactId>
         <version>3.7.1</version>
       </plugin>
+                       <plugin>
+                                <groupId>org.jacoco</groupId>
+                                <artifactId>jacoco-maven-plugin</artifactId>
+                                <version>0.8.1</version>
+                                <executions>
+                                        <execution>
+                                                <id>default-prepare-agent</id>
+                                                <goals>
+                                                        <goal>prepare-agent</goal>
+                                                </goals>
+                                        </execution>
+                                        <execution>
+                                                <id>default-report</id>
+                                                <phase>prepare-package</phase>
+                                                <goals>
+                                                        <goal>report</goal>
+                                                </goals>
+                                        </execution>
+                                </executions>
+                        </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -63,6 +84,8 @@
           </compilerArgs>
         </configuration>
       </plugin>
+</build>
+<reporting>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
@@ -134,6 +157,52 @@
           </execution>
         </executions>
       </plugin>
+                        <plugin>
+                                <groupId>org.codehaus.mojo</groupId>
+                                <artifactId>findbugs-maven-plugin</artifactId>
+                                <version>3.0.4</version>
+                                <configuration>
+                                        <xmlOutput>true</xmlOutput>
+                                        <effort>Max</effort>
+                                        <threshold>Low</threshold>
+                                        <excludes>
+                                                <!-- exclude auto-generated files -->
+                                                <exclude>**/svg/**/*</exclude>
+                                        </excludes>
+        
+                                        <maxHeap>1024</maxHeap>
+
+                                        <!-- for now ignore issues with default encoding -->
+                                        <omitVisitors>DefaultEncodingDetector</omitVisitors>
+                                </configuration>
+                        </plugin>
+                       <plugin>
+                                <groupId>org.jacoco</groupId>
+                                <artifactId>jacoco-maven-plugin</artifactId>
+                                <version>0.8.1</version>
+                        </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+					<systemPropertyVariables>
+						<jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<configuration>
+					<failOnError>false</failOnError>		
+ 					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
+			</plugin>
+
+
     </plugins>
   </build>
   <dependencies>
