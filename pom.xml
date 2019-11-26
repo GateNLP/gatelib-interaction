@@ -84,24 +84,6 @@
           </compilerArgs>
         </configuration>
       </plugin>
-</build>
-<reporting>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.0.1</version>
-        <executions>
-          <execution>
-            <id>run-javadoc</id>
-            <goals>
-              <goal>javadoc</goal>
-            </goals>
-            <phase>test</phase>
-            <configuration>
-          </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -157,6 +139,20 @@
           </execution>
         </executions>
       </plugin>
+
+  </plugins>
+</build>
+<reporting>
+  <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.0.1</version>
+				<configuration>
+					<failOnError>false</failOnError>		
+ 					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
+      </plugin>
                         <plugin>
                                 <groupId>org.codehaus.mojo</groupId>
                                 <artifactId>findbugs-maven-plugin</artifactId>
@@ -204,7 +200,7 @@
 
 
     </plugins>
-  </build>
+  </reporting>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
