@@ -213,9 +213,12 @@ public abstract class ProcessBase
 
   /**
    * Helper class for copying a process stream.
-   * This class copies the input stream to the output stream in a thread.
+   * This class copies the input stream to the output stream using a buffer.
+   * NOTE: this class was used in older versions, but if several process
+   * streams get copied to a local stream using this class, the output 
+   * may get mixed up. The byLine class should work better and is used now. 
    */
-  private class StreamCopierByBuffer extends Thread {
+  private static class StreamCopierByBuffer extends Thread {
       InputStream stream;
       OutputStream outstream;
       public StreamCopierByBuffer(InputStream stream, OutputStream outstream) {
@@ -252,13 +255,11 @@ public abstract class ProcessBase
    * Helper class for copying a process stream.
    * This class copies the input stream to the output stream line by line.
    */
-  private class StreamCopierByLine extends Thread {
-      InputStream instream;
+  private static class StreamCopierByLine extends Thread {
       OutputStream outstream;
       InputStreamReader isr;
       BufferedReader br;
       public StreamCopierByLine(InputStream instream, OutputStream outstream) {
-        this.instream = instream;
         this.outstream = outstream;
         try {
           isr = new InputStreamReader(instream, "utf-8");
