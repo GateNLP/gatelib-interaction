@@ -19,15 +19,20 @@
  */
 package gate.lib.interaction.process;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -201,7 +206,7 @@ public abstract class ProcessBase
      */
   
   protected void copyStream(final InputStream processStream, final OutputStream ourStream) {
-    loggerThread = new StreamCopier(processStream, ourStream);
+    loggerThread = new StreamCopierByLine(processStream, ourStream);
     loggerThread.setDaemon(true);
     loggerThread.start();
   }
@@ -210,10 +215,10 @@ public abstract class ProcessBase
    * Helper class for copying a process stream.
    * This class copies the input stream to the output stream in a thread.
    */
-  private class StreamCopier extends Thread {
+  private class StreamCopierByBuffer extends Thread {
       InputStream stream;
       OutputStream outstream;
-      public StreamCopier(InputStream stream, OutputStream outstream) {
+      public StreamCopierByBuffer(InputStream stream, OutputStream outstream) {
         this.stream = stream;
         this.outstream = outstream;
       }
@@ -243,6 +248,43 @@ public abstract class ProcessBase
       }  
   }
   
+  /**
+   * Helper class for copying a process stream.
+   * This class copies the input stream to the output stream line by line.
+   */
+  private class StreamCopierByLine extends Thread {
+      InputStream instream;
+      OutputStream outstream;
+      InputStreamReader isr;
+      BufferedReader br;
+      public StreamCopierByLine(InputStream instream, OutputStream outstream) {
+        this.instream = instream;
+        this.outstream = outstream;
+        try {
+          isr = new InputStreamReader(instream, "utf-8");
+        } catch (UnsupportedEncodingException ex) {
+          throw new RuntimeException("Could not create StreamReader", ex);
+        }
+        br = new BufferedReader(isr);
+      }
+      @Override
+      public void run() {
+        String strLine;
+        boolean isFirstLine = true;
+        try {
+          while( (strLine = br.readLine()) != null){
+            if(!isFirstLine) {
+              outstream.write("\n".getBytes());
+            }
+            outstream.write(strLine.getBytes("utf-8"));
+            isFirstLine = false;
+            outstream.flush();
+          }        
+        } catch(IOException ex) {
+          throw new RuntimeException("Error during stream copy", ex);
+        }
+      }  
+  }
   
   
   ///////////////////////////////////////////////////////////////////
