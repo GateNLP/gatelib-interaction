@@ -27,6 +27,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import org.junit.Test;
+import org.apache.commons.text.StringEscapeUtils;
 
 /**
  *
@@ -54,10 +55,12 @@ public class TestProcess4StringStream {
     assertEquals("This is the first line", ret);
     
     // test another one
-    System.err.println("Before sending the second line");
-    ret = (String)process.process("1234");
-    System.err.println("Got this: "+ret);
-    assertEquals("1234",ret);
+    String toSend = "12\uD83D\uDCA934";
+    
+    System.err.println("Before sending the second line: "+StringEscapeUtils.escapeJson(toSend));
+    ret = (String)process.process(toSend);
+    System.err.println("Got this: "+StringEscapeUtils.escapeJson(ret));
+    assertEquals(toSend,ret);
     // stop process
     System.err.println("Sending the STOP command");
     process.process("STOP");

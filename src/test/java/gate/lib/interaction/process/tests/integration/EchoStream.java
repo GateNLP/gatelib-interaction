@@ -25,7 +25,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.nio.charset.Charset;
 import java.util.Map;
+import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * A simple process that echoes back the string data it receives. 
@@ -47,18 +49,18 @@ public class EchoStream {
    */
   public static void main(String[] args) throws IOException, ClassNotFoundException {
     ObjectMapper mapper = new ObjectMapper();
-    PrintStream oos = new PrintStream(System.out);
+    PrintStream oos = new PrintStream(System.out, false, Charset.forName("UTF-8"));
     // this will wait for the hello object header of the other side
     BufferedReader ois = new BufferedReader(new InputStreamReader(System.in,"UTF-8"));
     String line;
     while(true) {
       System.err.println("ES: before reading");
       line = ois.readLine();
-      System.err.println("ES: got a line >"+line+"<");
       if(line==null) {
         System.err.println("Received a null line, terminating");
         break;
       }
+      System.err.println("ES: got a line >"+StringEscapeUtils.escapeJson(line)+"<");
       line = line.trim();
       // e terminate if we get the string STOP instead of a JSON object or a json map
       // that contains the key/value cmd/"STOP"

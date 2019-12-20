@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -141,7 +142,7 @@ public class Process4StringStream extends ProcessBase
   protected void setupInteraction() {
     try {
       //System.err.println("Setting up the Print Stream");
-      ps = new PrintStream(process.getOutputStream());
+      ps = new PrintStream(process.getOutputStream(),false,Charset.forName("UTF-8"));
       //ps.println("Hello from Process4ObjectStream v1.0");
     } catch (Exception ex) {
       throw new RuntimeException("Could not create output connection",ex);
