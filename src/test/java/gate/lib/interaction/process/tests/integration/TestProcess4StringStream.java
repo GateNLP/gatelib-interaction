@@ -20,6 +20,7 @@
 package gate.lib.interaction.process.tests.integration;
 import gate.lib.interaction.process.pipes.Process4StringStream;
 import gate.lib.interaction.process.*;
+import gate.lib.interaction.process.tests.Utils;
 
 import java.io.File;
 import static org.junit.Assert.assertEquals;
@@ -36,9 +37,12 @@ public class TestProcess4StringStream {
   @Test
   public void testAll() {
     System.err.println("Test Process4StringStream: before creation");
+    
     Process4StringStream process = 
             Process4StringStream.create(new File("."), null,
-            "java -cp target/*:target/dependency/*:target/test-classes  gate.lib.interaction.process.tests.integration.EchoStream".split("\\s+",-1));
+            ("java -cp "+Utils.getClassPath()+                    
+             " gate.lib.interaction.process.tests.integration.EchoStream")
+                    .split("\\s+",-1));
     System.err.println("Test Process4StringStream: after creation");
     assertTrue(process.isAlive());
     System.err.println("Test Process4StringStream: is alive");

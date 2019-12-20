@@ -20,6 +20,7 @@
 package gate.lib.interaction.process.tests.integration;
 import gate.lib.interaction.process.pipes.Process4JsonStream;
 import gate.lib.interaction.process.*;
+import gate.lib.interaction.process.tests.Utils;
 
 import java.io.File;
 import java.util.Arrays;
@@ -43,7 +44,9 @@ public class TestProcess4JsonStream {
     System.err.println("Test Process4JsonStream: before creation");
     Process4JsonStream process = 
             Process4JsonStream.create(new File("."), null,
-            "java -cp target/*:target/dependency/*:target/test-classes  gate.lib.interaction.process.tests.integration.EchoStream".split("\\s+",-1));
+            ("java -cp "+Utils.getClassPath()+
+             " gate.lib.interaction.process.tests.integration.EchoStream")
+                    .split("\\s+",-1));
     System.err.println("Test Process4JsonStream: after creation");
     assertTrue(process.isAlive());
     System.err.println("Test Process4JsonStream: is alive");
