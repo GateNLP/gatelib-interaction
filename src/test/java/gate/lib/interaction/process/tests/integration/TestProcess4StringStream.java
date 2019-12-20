@@ -19,7 +19,6 @@
  */
 package gate.lib.interaction.process.tests.integration;
 import gate.lib.interaction.process.pipes.Process4StringStream;
-import gate.lib.interaction.process.*;
 import gate.lib.interaction.process.tests.Utils;
 
 import java.io.File;
@@ -35,6 +34,9 @@ import org.apache.commons.text.StringEscapeUtils;
  */
 public class TestProcess4StringStream {
   
+  /**
+   * A test, yayy!
+   */
   @Test
   public void testAll() {
     System.err.println("Test Process4StringStream: before creation");

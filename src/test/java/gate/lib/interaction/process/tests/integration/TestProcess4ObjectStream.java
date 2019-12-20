@@ -19,7 +19,6 @@
  */
 package gate.lib.interaction.process.tests.integration;
 import gate.lib.interaction.process.pipes.Process4ObjectStream;
-import gate.lib.interaction.process.*;
 import gate.lib.interaction.process.tests.Utils;
 import java.io.File;
 import static org.junit.Assert.assertEquals;
@@ -33,6 +32,9 @@ import org.junit.Test;
  */
 public class TestProcess4ObjectStream {
   
+  /**
+   * Ohhhhhh a test!
+   */
   @Test
   public void testAll() {
     Process4ObjectStream process = 

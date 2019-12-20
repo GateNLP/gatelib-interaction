@@ -25,7 +25,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.nio.charset.Charset;
 import java.util.Map;
 import org.apache.commons.text.StringEscapeUtils;
 
@@ -49,7 +48,7 @@ public class EchoStream {
    */
   public static void main(String[] args) throws IOException, ClassNotFoundException {
     ObjectMapper mapper = new ObjectMapper();
-    PrintStream oos = new PrintStream(System.out, false, Charset.forName("UTF-8"));
+    PrintStream oos = new PrintStream(System.out, false, "UTF-8");
     // this will wait for the hello object header of the other side
     BufferedReader ois = new BufferedReader(new InputStreamReader(System.in,"UTF-8"));
     String line;

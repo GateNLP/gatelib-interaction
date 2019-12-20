@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -38,6 +37,10 @@ import org.junit.Test;
  */
 public class TestProcessSimple {
   
+  /**
+   * Ye olde test!
+   * @throws UnsupportedEncodingException  sometimes
+   */
   @Test
   public void testAll() throws UnsupportedEncodingException {
     // only run if it looks as if this would be a linux-like OS

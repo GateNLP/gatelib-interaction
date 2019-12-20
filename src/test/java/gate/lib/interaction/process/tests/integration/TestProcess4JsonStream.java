@@ -19,7 +19,6 @@
  */
 package gate.lib.interaction.process.tests.integration;
 import gate.lib.interaction.process.pipes.Process4JsonStream;
-import gate.lib.interaction.process.*;
 import gate.lib.interaction.process.tests.Utils;
 
 import java.io.File;
@@ -34,11 +33,14 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
- *
+ * Test class.
  * @author Johann Petrak
  */
 public class TestProcess4JsonStream {
   
+  /**
+   * Ladies and gentlemen: a test.
+   */
   @Test
   public void testAll() {
     System.err.println("Test Process4JsonStream: before creation");
@@ -51,11 +53,12 @@ public class TestProcess4JsonStream {
     assertTrue(process.isAlive());
     System.err.println("Test Process4JsonStream: is alive");
     // send something to the echo process
-    Map m = new HashMap();
+    Map<Object,Object> m = new HashMap<>();
     m.put("x","y");
     m.put("cmd","do");
     System.err.println("Test Process4JsonStream: before write");
-    Map ret = (Map)process.process(m);
+    @SuppressWarnings("unchecked")
+    Map<Object,Object> ret = (Map<Object,Object>)process.process(m);
     System.err.println("Test Process4JsonStream: after read");
     // make sure we got it back properly
     assertNotNull(ret);
@@ -63,11 +66,13 @@ public class TestProcess4JsonStream {
     
     // test sending an array of doubles
     List<Double> origs = Arrays.asList(1.1,2.2,3.3,4.4);
-    m = new HashMap();
+    m = new HashMap<>();
     m.put("vals",origs);
-    ret = (Map)process.process(m);
-    assertNotNull(ret);
-    List<Double> retvals = (List)ret.get("vals");
+    @SuppressWarnings("unchecked")
+    Map<Object,Object> ret2 = (Map<Object,Object>)process.process(m);
+    assertNotNull(ret2);
+    @SuppressWarnings("unchecked")
+    List<Double> retvals = (List<Double>)ret2.get("vals");
     System.err.println("Array back: "+retvals);
     
     // send the stop signal, can do this as a JSON object or just raw String for the EchoStream class  
