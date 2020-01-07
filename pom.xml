@@ -116,7 +116,7 @@
           <showDeprecation>true</showDeprecation>
           <compilerArgs>
             <arg>-Xlint:all</arg>
-            <arg>-Xdoclint:all/public</arg>
+            <!-- <arg>-Xdoclint:all/public</arg>  SEE https://bugs.openjdk.java.net/browse/JDK-8186647  -->
           </compilerArgs>
         </configuration>
       </plugin>
