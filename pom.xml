@@ -80,11 +80,13 @@
       </plugin>
 
       <!-- this is just needed for the site goal -->
+      <!-- DEBUG: what if we remove it? 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
         <version>3.7.1</version>
       </plugin>
+      -->
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
@@ -116,6 +118,7 @@
           <showDeprecation>true</showDeprecation>
           <compilerArgs>
             <arg>-Xlint:all</arg>
+            <arg>-Xlint:-processing</arg> <!-- silence stupid warning about non-claimed annotation org.junit.Test -->
             <!-- <arg>-Xdoclint:all/public</arg>  SEE https://bugs.openjdk.java.net/browse/JDK-8186647  -->
           </compilerArgs>
         </configuration>
@@ -177,6 +180,9 @@
       </plugin>
     </plugins>
   </build>
+  <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+  
+  
   <reporting>
     <plugins>
       <plugin>
@@ -224,7 +230,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.9.1</version>
+        <version>3.1.1</version>
         <configuration>
           <failOnError>false</failOnError>
           <additionalparam>-Xdoclint:none</additionalparam>
