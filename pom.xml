@@ -80,13 +80,15 @@
       </plugin>
 
       <!-- this is just needed for the site goal -->
-      <!-- DEBUG: what if we remove it? 
+      <!-- 
+      otherwise I get: java.lang.NoClassDefFoundError: org/apache/maven/doxia/siterenderer/DocumentContent and many more errors 
+      when running mvn -e clean site locally 
+      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
         <version>3.7.1</version>
       </plugin>
-      -->
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
