@@ -196,15 +196,11 @@
         <version>3.0.4</version>
         <configuration>
           <xmlOutput>true</xmlOutput>
+          <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+          <excludeFilterFile>src/build/resources/findbugs-excluded.xml</excludeFilterFile>
           <effort>Max</effort>
           <threshold>Low</threshold>
-          <excludes>
-            <!-- exclude auto-generated files -->
-            <exclude>**/svg/**/*</exclude>
-          </excludes>
           <maxHeap>1024</maxHeap>
-          <!-- for now ignore issues with default encoding -->
-          <omitVisitors>DefaultEncodingDetector</omitVisitors>
         </configuration>
       </plugin>
       <plugin>
