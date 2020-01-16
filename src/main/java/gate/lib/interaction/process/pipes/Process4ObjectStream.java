@@ -29,8 +29,8 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Minimalist class for exchanging objects through object streams  with a command line process.
@@ -41,7 +41,10 @@ import org.apache.log4j.Logger;
 public class Process4ObjectStream extends ProcessBase
 {
 
-  private static final Logger LOGGER = Logger.getLogger(Process4ObjectStream.class.getName());
+  /**
+   * Our logger instance.
+   */
+  public transient Logger logger = LoggerFactory.getLogger(this.getClass());
   
   private final Object synchronizer = new Object();
 

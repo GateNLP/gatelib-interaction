@@ -26,14 +26,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Common base class for all ProcessXxxx subclasses.
@@ -63,7 +63,10 @@ import org.apache.log4j.Logger;
 public abstract class ProcessBase 
 {
 
-  private static final Logger LOGGER = Logger.getLogger(ProcessBase.class.getName());
+  /**
+   * Our logger instance.
+   */
+  public transient Logger logger = LoggerFactory.getLogger(this.getClass());
   
   // The command to start the process. not required for all process types!
   // TODO: replace with the commandline representation of apache commons exe!
@@ -219,6 +222,7 @@ public abstract class ProcessBase
    * may get mixed up. The byLine class should work better and is used now. 
    */
   private static class StreamCopierByBuffer extends Thread {
+      public transient Logger logger = LoggerFactory.getLogger(this.getClass());
       InputStream stream;
       OutputStream outstream;
       public StreamCopierByBuffer(InputStream stream, OutputStream outstream) {
@@ -237,14 +241,14 @@ public abstract class ProcessBase
               break;
             }
           } catch (IOException ex) {
-            LOGGER.error("Could not copy stream from the process to our own stream", ex);
+            logger.error("Could not copy stream from the process to our own stream", ex);
             break;
           }
           try {
             // if we actually got something in our buffer, write it to our stream
             outstream.write(buffer);
           } catch (IOException ex) {
-            LOGGER.error("Could not copy stream from the process to our own stream", ex);
+            logger.error("Could not copy stream from the process to our own stream", ex);
             break;
           }
         }

@@ -29,8 +29,10 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.log4j.Logger;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Minimalist class for exchanging String lines
  * 
@@ -46,7 +48,10 @@ import java.util.Map;
 public class Process4StringStream extends ProcessBase
 {
 
-  private static final Logger LOGGER = Logger.getLogger(Process4StringStream.class.getName());
+  /**
+   * Our logger instance.
+   */
+  public transient Logger logger = LoggerFactory.getLogger(this.getClass());
   
   private final Object synchronizer = new Object();
   

@@ -24,7 +24,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Minimalist class for running an external command. 
@@ -36,7 +37,10 @@ import org.apache.log4j.Logger;
 public class ProcessSimple extends ProcessBase
 {
 
-  private static final Logger LOGGER = Logger.getLogger(ProcessSimple.class.getName());
+  /**
+   * Our logger instance.
+   */
+  public transient Logger logger = LoggerFactory.getLogger(this.getClass());
   
   private ProcessSimple() {} 
   
