@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Minimalist class for running an external command. 
@@ -37,11 +35,6 @@ import org.slf4j.LoggerFactory;
 public class ProcessSimple extends ProcessBase
 {
 
-  /**
-   * Our logger instance.
-   */
-  public transient Logger logger = LoggerFactory.getLogger(this.getClass());
-  
   private ProcessSimple() {} 
   
   /**

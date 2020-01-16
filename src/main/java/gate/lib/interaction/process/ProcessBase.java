@@ -63,11 +63,6 @@ import org.slf4j.LoggerFactory;
 public abstract class ProcessBase 
 {
 
-  /**
-   * Our logger instance.
-   */
-  public transient Logger logger = LoggerFactory.getLogger(this.getClass());
-  
   // The command to start the process. not required for all process types!
   // TODO: replace with the commandline representation of apache commons exe!
   protected List<String> command = new ArrayList<>();

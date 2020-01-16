@@ -32,8 +32,6 @@ import gate.lib.interaction.process.ProcessBase;
 import java.io.EOFException;
 import java.util.HashMap;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Minimalist class for exchanging objects through JSON
@@ -43,11 +41,6 @@ import org.slf4j.LoggerFactory;
  */
 public class Process4JsonStream extends ProcessBase
 {
-  
-  /**
-   * Our logger instance.
-   */
-  public transient Logger logger = LoggerFactory.getLogger(this.getClass());
   
   private final Object synchronizer = new Object();
   
