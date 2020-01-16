@@ -1,0 +1,53 @@
+<FindBugsFilter>
+   <Match>
+      <Or>
+         <Bug pattern="SE_TRANSIENT_FIELD_NOT_RESTORED" />
+         <Bug pattern="UWF_NULL_FIELD" />
+         <Bug pattern="WMI_WRONG_MAP_ITERATOR" />
+         <Bug pattern="SF_SWITCH_NO_DEFAULT" />
+         <Bug pattern="UWF_UNWRITTEN_FIELD" />
+         <Bug pattern="DM_DEFAULT_ENCODING" />
+         <Bug pattern="URF_UNREAD_FIELD" />
+         <Bug pattern="SE_TRANSIENT_FIELD_NOT_RESTORED" />
+         <Bug pattern="DLS_DEAD_LOCAL_STORE" />
+         <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" />
+         <!--
+         The warnings about logger not being Serializable are silly. 
+         -->
+         <Bug pattern="SE_BAD_FIELD" />
+         <!-- yes, when I do this I do it deliberately and for performance reasosns,
+              do not break my build because of this. -->
+         <Bug pattern="EI_EXPOSE_REP" />
+
+         <!--
+         No I do not want to create a separate class for the Thread
+         -->
+         <Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON" />
+         <!-- 
+         Yes I want to write that static field
+         -->
+         <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD" />
+         <!-- 
+         Do not bug me about the transient logger
+         -->
+         <Bug pattern="SE_TRANSIENT_FIELD_NOT_RESTORED" />
+
+         <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" />
+
+         <!-- yeah but this gets ALWAYS initialised elsewhere -->
+         <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" />
+
+         <!-- never read by us, but by others, shut up -->
+         <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD" />
+
+      </Or>
+   </Match>
+
+   <Match>
+      <Or>
+         <!-- Not written by me, will be replaced anyway --> 
+         <Package name="~org\.apache\.commons.*" />
+      </Or>
+   </Match>
+</FindBugsFilter>
+
