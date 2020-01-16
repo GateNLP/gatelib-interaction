@@ -78,12 +78,6 @@
           </gitDescribe>
         </configuration>
       </plugin>
-
-      <!-- this is just needed for the site goal -->
-      <!-- 
-      otherwise I get: java.lang.NoClassDefFoundError: org/apache/maven/doxia/siterenderer/DocumentContent and many more errors 
-      when running mvn -e clean site locally 
-      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
@@ -120,7 +114,7 @@
           <showDeprecation>true</showDeprecation>
           <compilerArgs>
             <arg>-Xlint:all</arg>
-            <arg>-Xlint:-processing</arg> <!-- silence stupid warning about non-claimed annotation org.junit.Test -->
+            <arg>-Xlint:-processing</arg> 
             <!-- <arg>-Xdoclint:all/public</arg>  SEE https://bugs.openjdk.java.net/browse/JDK-8186647  -->
           </compilerArgs>
         </configuration>
