@@ -183,27 +183,4 @@ public class Process4JsonStream extends ProcessBase
     }
   }
   
-  ////////////////////////////////////////////////
-
-  /**
-   * Simple main for testing.
-   * @param args unused
-   */
-  
-  @SuppressWarnings("unchecked")
-  public static void main(String[] args) {
-    System.err.println("Running the Process4JsonStream class");
-    Process4JsonStream pr = Process4JsonStream.create(new File("."),null,
-            "java -cp target/interaction-1.0-SNAPSHOT.jar:target/dependency/* gate.lib.interaction.process.EchoStream");
-    //String someString = "this is some string";
-    System.err.println("Right before writing to process");
-    Map<String,Object> m = new HashMap<>();
-    m.put("field1",12);
-    m.put("field2","asasa");
-    Map<?,?> ret = (Map<?,?>)pr.process(m);
-    System.err.println("Got the object back: "+ret);
-    System.err.println("Shutting down");
-    pr.stop();
-  }
-  
 }

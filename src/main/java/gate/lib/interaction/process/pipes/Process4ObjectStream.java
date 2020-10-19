@@ -165,27 +165,4 @@ public class Process4ObjectStream extends ProcessBase
     }
   }
   
-  ////////////////////////////////////////////////
-
-  /**
-   * Main method for testing.
-   * @param args not used
-   */
-  
-  public static void main(String[] args) {
-    System.err.println("Running the Process4ObjectStream class");
-    Process4ObjectStream pr = 
-            Process4ObjectStream.create(new File("."),null,
-                    "java -cp target/interaction-1.0-SNAPSHOT.jar gate.lib.interaction.process.EchoObjectStream");
-    String someString = "this is some string";
-    System.err.println("Right before writing to process");
-    Object obj = pr.process(someString);
-    System.err.println("Got the object back: "+obj);
-    System.err.println("Writing another one (1234)");
-    obj = pr.process("1234");
-    System.err.println("Got "+obj);
-    System.err.println("Shutting down");
-    pr.stop();
-  }
-  
 }

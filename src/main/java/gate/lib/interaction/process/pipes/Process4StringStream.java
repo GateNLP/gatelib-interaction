@@ -177,25 +177,4 @@ public class Process4StringStream extends ProcessBase
     }
   }
   
-  ////////////////////////////////////////////////
-
-  /**
-   * Simple main method for testing.
-   * @param args not used
-   */
-  
-  public static void main(String[] args) {
-    System.err.println("Running the Process4StringStream class");
-    Process4StringStream pr = Process4StringStream.create(new File("."),null,"java -cp target/interaction-1.0-SNAPSHOT.jar:target/dependency/* gate.lib.interaction.process.EchoStream");
-    //String someString = "this is some string";
-    System.err.println("Right before writing to process");
-    String ret = (String)pr.process("First line sent over");
-    System.err.println("Got the line back: "+ret);
-    System.err.println("Writing another one (1234)");
-    ret = (String)pr.process("1234");
-    System.err.println("Got "+ret);
-    System.err.println("Shutting down");
-    pr.stop();
-  }
-  
 }
