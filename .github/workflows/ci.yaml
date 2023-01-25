@@ -15,4 +15,7 @@ permissions:
 jobs:
   common-build:
     uses: GateNLP/gate-top/.github/workflows/standard-module.yml@master
+    with:
+      # Full rather than shallow clone
+      fetch_depth: "0"
     secrets: inherit
